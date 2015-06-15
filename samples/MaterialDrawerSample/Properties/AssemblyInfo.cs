@@ -5,12 +5,12 @@ using Android.App;
 // Information about this assembly is defined by the following attributes.
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle("MaterialDrawerSample")]
+[assembly: AssemblyTitle("Sample")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("maa")]
+[assembly: AssemblyCopyright("amatkivskiy")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

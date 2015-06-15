@@ -9,12 +9,12 @@
     <RootNamespace>MaterialDrawer</RootNamespace>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
-    <AssemblyName>material-drawer-3.0.3</AssemblyName>
+    <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
+    <AssemblyName>material-drawer-3.0.7</AssemblyName>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <ReleaseVersion>3.0.3</ReleaseVersion>
+    <ReleaseVersion>3.0.7</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -61,18 +61,20 @@
   <ItemGroup>
     <TransformFile Include="Transforms\EnumFields.xml" />
     <TransformFile Include="Transforms\EnumMethods.xml" />
-    <TransformFile Include="Transforms\Metadata.xml" />
+    <TransformFile Include="Transforms\Metadata.xml">
+      <SubType>Designer</SubType>
+    </TransformFile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Xamarin.Android.Bindings.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <ItemGroup>
-    <LibraryProjectZip Include="Jars\materialdrawer-3.0.3.aar" />
-  </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\fontawesome-webfont-4.3.0.ttf" />
     <AndroidAsset Include="Assets\fonts\google_material_design.ttf" />
     <AndroidAsset Include="Assets\fonts\materialdesignicons-webfont.ttf" />
     <AndroidAsset Include="Assets\fonts\meteocons.ttf" />
     <AndroidAsset Include="Assets\fonts\octicons.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <LibraryProjectZip Include="Jars\materialdrawer-3.0.7.aar" />
   </ItemGroup>
 </Project>

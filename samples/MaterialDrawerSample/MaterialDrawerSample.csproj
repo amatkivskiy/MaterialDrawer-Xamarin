@@ -1,25 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProjectGuid>{35D216A1-FEE5-4E1F-AEBB-1AFE4B184FBC}</ProjectGuid>
+    <ProjectGuid>{6E35247B-58E6-465B-9E0F-E0AF9AAD66FA}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MaterialDrawerSample</RootNamespace>
+    <RootNamespace>Sample</RootNamespace>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
-    <AssemblyName>MaterialDrawerSample</AssemblyName>
+    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <AssemblyName>Sample</AssemblyName>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <ReleaseVersion>3.0.3</ReleaseVersion>
-    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <ReleaseVersion>3.0.7</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,8 +28,6 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <AndroidLinkMode>None</AndroidLinkMode>
-    <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -41,13 +36,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <AndroidSupportedAbis>armeabi;armeabi-v7a;x86;arm64-v8a;x86_64</AndroidSupportedAbis>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
+    <Reference Include="Picasso">
+      <HintPath>Libs\Picasso.dll</HintPath>
+    </Reference>
     <Reference Include="Xamarin.Android.Support.v4">
       <HintPath>..\..\solutions\packages\Xamarin.Android.Support.v4.22.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
     </Reference>
@@ -59,35 +57,55 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MainActivity.cs" />
+    <Compile Include="CustomApplication.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
+    <None Include="Libs\Picasso.dll" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\Main.axml" />
-    <AndroidResource Include="Resources\values\Strings.xml" />
-    <AndroidResource Include="Resources\drawable-hdpi\Icon.png" />
-    <AndroidResource Include="Resources\drawable-mdpi\Icon.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\Icon.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\Icon.png" />
-    <AndroidResource Include="Resources\drawable-xxxhdpi\Icon.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\ic_drawer_light.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_drawer_light.png" />
-    <AndroidResource Include="Resources\values\styles.xml" />
-  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
-  <Import Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" Project="$(SolutionDir)\.nuget\NuGet.targets" />
   <ItemGroup>
     <ProjectReference Include="..\..\library\MaterialDrawer\MaterialDrawer.csproj">
       <Project>{0D0D20CD-8CAB-4C20-9EE6-C0B69E6CE0C4}</Project>
       <Name>MaterialDrawer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\header.jpg" />
+    <AndroidResource Include="Resources\drawable\profile.jpg" />
+    <AndroidResource Include="Resources\drawable\profile2.jpg" />
+    <AndroidResource Include="Resources\drawable\profile3.jpg" />
+    <AndroidResource Include="Resources\drawable\profile4.jpg" />
+    <AndroidResource Include="Resources\drawable\profile5.jpg" />
+    <AndroidResource Include="Resources\drawable\profile6.jpg" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_launcher.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_launcher.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_launcher.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_launcher.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_launcher.png" />
+    <AndroidResource Include="Resources\layout\activity_dualpane.xml" />
+    <AndroidResource Include="Resources\layout\activity_sample.xml" />
+    <AndroidResource Include="Resources\layout\activity_sample_actionbar.xml" />
+    <AndroidResource Include="Resources\layout\activity_sample_custom_container_dark_toolbar.xml" />
+    <AndroidResource Include="Resources\layout\activity_sample_dark_toolbar.xml" />
+    <AndroidResource Include="Resources\layout\activity_sample_fragment_dark_toolbar.xml" />
+    <AndroidResource Include="Resources\layout\activity_sample_fullscreen_dark_toolbar.xml" />
+    <AndroidResource Include="Resources\layout\activity_sample_nontranslucent.xml" />
+    <AndroidResource Include="Resources\layout\footer.xml" />
+    <AndroidResource Include="Resources\layout\fragment_sample.xml" />
+    <AndroidResource Include="Resources\layout\header.xml" />
+    <AndroidResource Include="Resources\layout-land\activity_dualpane.xml" />
+    <AndroidResource Include="Resources\menu\cab.xml" />
+    <AndroidResource Include="Resources\menu\main.xml" />
+    <AndroidResource Include="Resources\values\colors.xml" />
+    <AndroidResource Include="Resources\values\strings.xml" />
+    <AndroidResource Include="Resources\values\styles.xml" />
+    <AndroidResource Include="Resources\values-v19\styles.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\fontawesome-webfont-4.3.0.ttf" />

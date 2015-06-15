@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialDrawer", "..\library\MaterialDrawer\MaterialDrawer.csproj", "{0D0D20CD-8CAB-4C20-9EE6-C0B69E6CE0C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialDrawerSample", "..\samples\MaterialDrawerSample\MaterialDrawerSample.csproj", "{35D216A1-FEE5-4E1F-AEBB-1AFE4B184FBC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialDrawerSample", "..\samples\MaterialDrawerSample\MaterialDrawerSample.csproj", "{6E35247B-58E6-465B-9E0F-E0AF9AAD66FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,13 +17,13 @@ Global
 		{0D0D20CD-8CAB-4C20-9EE6-C0B69E6CE0C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D0D20CD-8CAB-4C20-9EE6-C0B69E6CE0C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D0D20CD-8CAB-4C20-9EE6-C0B69E6CE0C4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{35D216A1-FEE5-4E1F-AEBB-1AFE4B184FBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{35D216A1-FEE5-4E1F-AEBB-1AFE4B184FBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{35D216A1-FEE5-4E1F-AEBB-1AFE4B184FBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{35D216A1-FEE5-4E1F-AEBB-1AFE4B184FBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E35247B-58E6-465B-9E0F-E0AF9AAD66FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E35247B-58E6-465B-9E0F-E0AF9AAD66FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E35247B-58E6-465B-9E0F-E0AF9AAD66FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E35247B-58E6-465B-9E0F-E0AF9AAD66FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		version = 3.0.3
+		version = 3.0.7
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
