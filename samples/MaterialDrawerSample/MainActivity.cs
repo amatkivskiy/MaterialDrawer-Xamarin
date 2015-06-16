@@ -4,7 +4,6 @@
   using Android.OS;
   using Com.Mikepenz.Materialdrawer.Accountswitcher;
   using Com.Mikepenz.Materialdrawer;
-  using Android.Support.V7.Widget;
   using Android.Support.V7.App;
   using Com.Mikepenz.Materialdrawer.Model;
   using Android.Net;
