@@ -1,6 +1,9 @@
 # MaterialDrawer-Xamarin
 Xamarin bindings for https://github.com/mikepenz/MaterialDrawer
 
+## Download
+[NuGet Package](https://www.nuget.org/packages/Mikepenz.MaterialDrawer.Xamarin.Android/)
+
 ## Issues
 Due to different generic type systems in C# and Java fluent api is not available for:
 - ```PrimaryDrawerItem```
