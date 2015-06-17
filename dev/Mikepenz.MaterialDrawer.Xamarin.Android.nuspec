@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
-		<!-- prefer rather Mikepenz.Iconics.Xamarin.Android then this id in future -->
 		<id>Mikepenz.MaterialDrawer.Xamarin.Android</id>
 		<version>3.0.7</version>
 		<title>MaterialDrawer for Xamarin.Android</title>
