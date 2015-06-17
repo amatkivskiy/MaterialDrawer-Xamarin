@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<!-- prefer rather Mikepenz.Iconics.Xamarin.Android then this id in future -->
+		<id>Mikepenz.MaterialDrawer.Xamarin.Android</id>
+		<version>3.0.7</version>
+		<title>MaterialDrawer for Xamarin.Android</title>
+		<authors>Andriy Matkivskiy</authors>
+		<owners>amatkivskiy</owners>
+		<projectUrl>https://github.com/amatkivskiy/MaterialDrawer-Xamarin</projectUrl>
+		<iconUrl>https://raw.githubusercontent.com/amatkivskiy/MaterialDrawer-Xamarin/master/dev/package_logo.png</iconUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>C# bindings for MaterialDrawer library.
+The MaterialDrawer library aims to provide the easiest possible implementation of a navigation drawer for your application. It provides a great amount of out of the box customizations and also includes an easy to use header which can be used as AccountSwitcher.
+https://github.com/mikepenz/MaterialDrawer</description>
+		<summary>Xamarin binding for MaterialDrawer https://github.com/mikepenz/MaterialDrawer</summary>
+		<tags>Android Xamarin Drawer Material</tags>
+		<releaseNotes>Initial Release</releaseNotes>
+		<dependencies>
+			<dependency id="Mikepenz.Android.Iconics.Xamarin.Binding" version="1.0.2"/>
+			<dependency id="Xamarin.Android.Support.v4" version="22.2.0.0"/>
+			<dependency id="Xamarin.Android.Support.v7.AppCompat" version="22.2.0.0"/>
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="..\library\bin\Release\material-drawer-3.0.7.dll" target="lib\MonoAndroid\"/>
+	</files>
+</package>
