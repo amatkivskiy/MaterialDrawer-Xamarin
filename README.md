@@ -2,7 +2,7 @@
 Xamarin bindings for https://github.com/mikepenz/MaterialDrawer
 
 ## Issues
-Due to different generic type systems in C# and Java fluent api is not avalible for:
+Due to different generic type systems in C# and Java fluent api is not available for:
 - ```PrimaryDrawerItem```
 - ```SecondaryDrawerItem```
 - ```ToggleDrawerItem```
