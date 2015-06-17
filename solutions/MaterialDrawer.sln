@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialDrawer", "..\library\MaterialDrawer\MaterialDrawer.csproj", "{0D0D20CD-8CAB-4C20-9EE6-C0B69E6CE0C4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialDrawerSample", "..\samples\MaterialDrawerSample\MaterialDrawerSample.csproj", "{6E35247B-58E6-465B-9E0F-E0AF9AAD66FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialDrawer", "..\library\MaterialDrawer.csproj", "{0D0D20CD-8CAB-4C20-9EE6-C0B69E6CE0C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

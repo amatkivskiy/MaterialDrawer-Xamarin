@@ -71,12 +71,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\library\MaterialDrawer\MaterialDrawer.csproj">
-      <Project>{0D0D20CD-8CAB-4C20-9EE6-C0B69E6CE0C4}</Project>
-      <Name>MaterialDrawer</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\header.jpg" />
     <AndroidResource Include="Resources\drawable\profile.jpg" />
     <AndroidResource Include="Resources\drawable\profile2.jpg" />
@@ -114,5 +108,11 @@
     <AndroidAsset Include="Assets\fonts\materialdesignicons-webfont.ttf" />
     <AndroidAsset Include="Assets\fonts\meteocons.ttf" />
     <AndroidAsset Include="Assets\fonts\octicons.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\library\MaterialDrawer.csproj">
+      <Project>{0D0D20CD-8CAB-4C20-9EE6-C0B69E6CE0C4}</Project>
+      <Name>MaterialDrawer</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
