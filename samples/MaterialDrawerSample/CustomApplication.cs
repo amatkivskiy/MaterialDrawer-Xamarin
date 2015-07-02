@@ -1,3 +1,5 @@
+using Mikepenz.MaterialDrawer.Utils;
+
 namespace MaterialDrawerSample
 {
   using System;
@@ -6,7 +8,6 @@ namespace MaterialDrawerSample
   using Android.Graphics.Drawables;
   using Android.Runtime;
   using Android.Widget;
-  using Com.Mikepenz.Materialdrawer.Util;
   using Squareup.Picasso;
 
   [Application]

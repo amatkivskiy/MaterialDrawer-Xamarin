@@ -1,13 +1,14 @@
-﻿namespace Sample
+﻿using Mikepenz.MaterialDrawer.Accountswitcher;
+using Mikepenz.MaterialDrawer;
+using Mikepenz.MaterialDrawer.Models.Interfaces;
+using Mikepenz.MaterialDrawer.Models;
+
+namespace Sample
 {
   using Android.App;
   using Android.OS;
-  using Com.Mikepenz.Materialdrawer.Accountswitcher;
-  using Com.Mikepenz.Materialdrawer;
   using Android.Support.V7.App;
-  using Com.Mikepenz.Materialdrawer.Model;
   using Android.Net;
-  using Com.Mikepenz.Materialdrawer.Model.Interfaces;
   using Android.Views;
   using Com.Mikepenz.Google_material_typeface_library;
   using Com.Mikepenz.Iconics;

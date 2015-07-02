@@ -8,4 +8,17 @@
   -->
    <attr path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='PrimaryDrawerItem']/method[@name='withBadge']" name="managedReturn">Java.Lang.Object</attr>
    <attr path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='SecondaryDrawerItem']/method[@name='withBadge']" name="managedReturn">Java.Lang.Object</attr>
+
+   <attr path="/api/package[@name='com.mikepenz.materialdrawer']" name="managedName">Mikepenz.MaterialDrawer</attr>
+   <attr path="/api/package[@name='com.mikepenz.materialdrawer.model']" name="managedName">Mikepenz.MaterialDrawer.Models</attr>
+   <attr path="/api/package[@name='com.mikepenz.materialdrawer.model.interfaces']" name="managedName">Mikepenz.MaterialDrawer.Models.Interfaces</attr>
+
+   <attr path="/api/package[@name='com.mikepenz.materialdrawer.util']" name="managedName">Mikepenz.MaterialDrawer.Utils</attr>
+
+   <attr path="/api/package[@name='com.mikepenz.materialdrawer.view']" name="managedName">Mikepenz.MaterialDrawer.Views</attr>
+   <attr path="/api/package[@name='com.mikepenz.materialdrawer.adapter']" name="managedName">Mikepenz.MaterialDrawer.Adapters</attr>
+   <attr path="/api/package[@name='com.mikepenz.materialdrawer.accountswitcher']" name="managedName">Mikepenz.MaterialDrawer.Accountswitcher</attr>
+
+   <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='BaseDrawerItem']/method[@name='withTintSelectedIcon' and count(parameter)=1 and parameter[1][@type='boolean']]" />
+   <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='BaseDrawerItem']/method[@name='withIconTinted' and count(parameter)=1 and parameter[1][@type='boolean']]" />
 </metadata>
