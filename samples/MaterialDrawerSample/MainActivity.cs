@@ -1,13 +1,4 @@
-﻿using Mikepenz.MaterialDrawer.Accountswitcher;
-using Mikepenz.MaterialDrawer;
-using Mikepenz.MaterialDrawer.Models.Interfaces;
-using Mikepenz.MaterialDrawer.Models;
-using Mikepenz.Iconics;
-using Mikepenz.Google_material_typeface_library;
-using Mikepenz.Iconics.Typeface;
-using Mikepenz.Octicons_typeface_library;
-
-namespace Sample
+﻿namespace Sample
 {
   using Android.App;
   using Android.OS;
@@ -16,6 +7,14 @@ namespace Sample
   using Android.Views;
   using Android.Widget;
   using Android.Util;
+  using Mikepenz.Google_material_typeface_library;
+  using Mikepenz.Iconics;
+  using Mikepenz.Iconics.Typeface;
+  using Mikepenz.MaterialDrawer;
+  using Mikepenz.MaterialDrawer.Accountswitcher;
+  using Mikepenz.MaterialDrawer.Models;
+  using Mikepenz.MaterialDrawer.Models.Interfaces;
+  using Mikepenz.Octicons_typeface_library;
 
   [Activity(MainLauncher = true, Theme = "@style/MaterialDrawerTheme.Light.DarkToolbar.TranslucentStatus")]
   public class MainActivity : AppCompatActivity, AccountHeader.IOnAccountHeaderListener, Drawer.IOnDrawerItemClickListener, IOnCheckedChangeListener
