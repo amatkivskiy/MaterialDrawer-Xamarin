@@ -15,6 +15,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <ReleaseVersion>3.0.7</ReleaseVersion>
+    <Java7DocPaths>JavaSrc</Java7DocPaths>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,8 +47,8 @@
     <Reference Include="Xamarin.Android.Support.v7.AppCompat">
       <HintPath>..\solutions\packages\Xamarin.Android.Support.v7.AppCompat.22.2.0.0\lib\MonoAndroid403\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
     </Reference>
-    <Reference Include="android-iconics-1.0.2">
-      <HintPath>..\solutions\packages\Mikepenz.Android.Iconics.Xamarin.Binding.1.0.2\lib\MonoAndroid\android-iconics-1.0.2.dll</HintPath>
+    <Reference Include="android-iconics-1.2.0">
+      <HintPath>Libs\android-iconics-1.2.0.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -57,6 +58,7 @@
     <None Include="Additions\AboutAdditions.txt" />
     <None Include="Jars\AboutJars.txt" />
     <None Include="packages.config" />
+    <None Include="Libs\android-iconics-1.2.0.dll" />
   </ItemGroup>
   <ItemGroup>
     <TransformFile Include="Transforms\EnumFields.xml" />
