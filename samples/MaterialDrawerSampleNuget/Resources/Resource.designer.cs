@@ -389,6 +389,12 @@ namespace MaterialDrawerSample
 			// aapt resource value: 0x7f0100d7
 			public const int iiv_icon = 2130772183;
 			
+			// aapt resource value: 0x7f0100da
+			public const int iiv_padding = 2130772186;
+			
+			// aapt resource value: 0x7f0100d9
+			public const int iiv_size = 2130772185;
+			
 			// aapt resource value: 0x7f010012
 			public const int indeterminateProgressStyle = 2130771986;
 			
@@ -4482,13 +4488,21 @@ namespace MaterialDrawerSample
 			
 			public static int[] IconicsImageView = new int[] {
 					2130772183,
-					2130772184};
+					2130772184,
+					2130772185,
+					2130772186};
 			
 			// aapt resource value: 1
 			public const int IconicsImageView_iiv_color = 1;
 			
 			// aapt resource value: 0
 			public const int IconicsImageView_iiv_icon = 0;
+			
+			// aapt resource value: 3
+			public const int IconicsImageView_iiv_padding = 3;
+			
+			// aapt resource value: 2
+			public const int IconicsImageView_iiv_size = 2;
 			
 			public static int[] LinearLayoutCompat = new int[] {
 					16842927,

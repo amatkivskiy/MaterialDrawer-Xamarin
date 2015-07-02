@@ -6,8 +6,8 @@ namespace MaterialDrawerSample
   using Android.Graphics.Drawables;
   using Android.Runtime;
   using Android.Widget;
-  using Com.Mikepenz.Materialdrawer.Util;
-  using Squareup.Picasso;
+  using Mikepenz.MaterialDrawer.Utils;
+  using Square.Picasso;
 
   [Application]
   public class CustomApplication : Application

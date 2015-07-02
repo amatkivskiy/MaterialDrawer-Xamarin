@@ -43,20 +43,26 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
-    <Reference Include="Picasso">
-      <HintPath>Libs\Picasso.dll</HintPath>
-    </Reference>
     <Reference Include="Xamarin.Android.Support.v4">
       <HintPath>..\..\solutions\packages\Xamarin.Android.Support.v4.22.2.0.0\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Android.Support.v7.AppCompat">
       <HintPath>..\..\solutions\packages\Xamarin.Android.Support.v7.AppCompat.22.2.0.0\lib\MonoAndroid403\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
     </Reference>
-    <Reference Include="android-iconics-1.0.2">
-      <HintPath>..\..\solutions\packages\Mikepenz.Android.Iconics.Xamarin.Binding.1.0.2\lib\MonoAndroid\android-iconics-1.0.2.dll</HintPath>
+    <Reference Include="android-iconics-1.2.0">
+      <HintPath>..\..\solutions\packages\Mikepenz.Android.Iconics.Xamarin.Binding.1.2.0\lib\MonoAndroid\android-iconics-1.2.0.dll</HintPath>
     </Reference>
-    <Reference Include="material-drawer-3.0.7">
-      <HintPath>..\..\solutions\packages\Mikepenz.MaterialDrawer.Xamarin.Android.3.0.7\lib\MonoAndroid\material-drawer-3.0.7.dll</HintPath>
+    <Reference Include="Square.OkIO">
+      <HintPath>..\..\solutions\packages\Square.OkIO.1.5.0.0\lib\MonoAndroid\Square.OkIO.dll</HintPath>
+    </Reference>
+    <Reference Include="Square.OkHttp">
+      <HintPath>..\..\solutions\packages\Square.OkHttp.2.4.0.2\lib\MonoAndroid\Square.OkHttp.dll</HintPath>
+    </Reference>
+    <Reference Include="Square.Picasso">
+      <HintPath>..\..\solutions\packages\Square.Picasso.2.5.2.1\lib\MonoAndroid\Square.Picasso.dll</HintPath>
+    </Reference>
+    <Reference Include="material-drawer-3.0.9">
+      <HintPath>..\..\solutions\packages\Mikepenz.MaterialDrawer.Xamarin.Android.3.0.9\lib\MonoAndroid\material-drawer-3.0.9.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -68,7 +74,6 @@
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
-    <None Include="Libs\Picasso.dll" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />

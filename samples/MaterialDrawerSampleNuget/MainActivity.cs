@@ -2,19 +2,19 @@
 {
   using Android.App;
   using Android.OS;
-  using Com.Mikepenz.Materialdrawer.Accountswitcher;
-  using Com.Mikepenz.Materialdrawer;
   using Android.Support.V7.App;
-  using Com.Mikepenz.Materialdrawer.Model;
   using Android.Net;
-  using Com.Mikepenz.Materialdrawer.Model.Interfaces;
   using Android.Views;
-  using Com.Mikepenz.Google_material_typeface_library;
-  using Com.Mikepenz.Iconics;
   using Android.Widget;
-  using Com.Mikepenz.Iconics.Typeface;
-  using Com.Mikepenz.Octicons_typeface_library;
   using Android.Util;
+  using Mikepenz.Google_material_typeface_library;
+  using Mikepenz.Iconics;
+  using Mikepenz.Iconics.Typeface;
+  using Mikepenz.MaterialDrawer;
+  using Mikepenz.MaterialDrawer.Accountswitcher;
+  using Mikepenz.MaterialDrawer.Models;
+  using Mikepenz.MaterialDrawer.Models.Interfaces;
+  using Mikepenz.Octicons_typeface_library;
 
   [Activity(MainLauncher = true, Theme = "@style/MaterialDrawerTheme.Light.DarkToolbar.TranslucentStatus")]
   public class MainActivity : AppCompatActivity, AccountHeader.IOnAccountHeaderListener, Drawer.IOnDrawerItemClickListener, IOnCheckedChangeListener
@@ -56,8 +56,8 @@
           profile5,
           profile6,
           //don't ask but google uses 14dp for the add account icon in gmail but 20dp for the normal icons (like manage account)
-          new ProfileSettingDrawerItem().WithName("Add Account").WithDescription("Add new GitHub Account").WithIcon(new IconicsDrawable(this, GoogleMaterial.Icon.GmdAdd).
-            ActionBarSize().PaddingDp(5).ColorRes(Resource.Color.material_drawer_primary_text)).WithIdentifier(PROFILE_SETTING),
+          new ProfileSettingDrawerItem().WithName("Add Account").WithDescription("Add new GitHub Account").WithIcon(new IconicsDrawable(this, GoogleMaterial.Icon.GmdAdd)
+            .PaddingDp(5).ColorRes(Resource.Color.material_drawer_primary_text)).WithIdentifier(PROFILE_SETTING),
           new ProfileSettingDrawerItem().WithName("Manage Account").WithIcon(GoogleMaterial.Icon.GmdSettings)
         )
         .WithOnAccountHeaderListener(this)
