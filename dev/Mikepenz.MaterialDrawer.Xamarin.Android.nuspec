@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Mikepenz.MaterialDrawer.Xamarin.Android</id>
-		<version>3.0.7</version>
+		<version>3.0.9</version>
 		<title>MaterialDrawer for Xamarin.Android</title>
 		<authors>Andriy Matkivskiy</authors>
 		<owners>amatkivskiy</owners>
@@ -14,14 +14,27 @@ The MaterialDrawer library aims to provide the easiest possible implementation o
 https://github.com/mikepenz/MaterialDrawer</description>
 		<summary>Xamarin binding for MaterialDrawer https://github.com/mikepenz/MaterialDrawer</summary>
 		<tags>Android Xamarin Drawer Material</tags>
-		<releaseNotes>Initial Release</releaseNotes>
+		<releaseNotes>
+			Updated version to 3.0.9
+			Renamed main namespace to Mikepenz.MaterialDrawer.
+
+			3.0.9
+				- update Android-Iconics to v1.2.0
+				- fix possible IndexOutOfBoundsException
+				- add new method to get DrawerContentRoot
+			3.0.8
+				- update Android-Iconics to v1.1.0 --> Now Supports text to create Drawables from ;) This will perhaps FIX (help) #423
+				- add new properties to support and FIX #433
+				- improve RTL Layout and fix #429
+				- update AboutLibraries
+		</releaseNotes>
 		<dependencies>
-			<dependency id="Mikepenz.Android.Iconics.Xamarin.Binding" version="1.0.2"/>
+			<dependency id="Mikepenz.Android.Iconics.Xamarin.Binding" version="1.2.0"/>
 			<dependency id="Xamarin.Android.Support.v4" version="22.2.0.0"/>
 			<dependency id="Xamarin.Android.Support.v7.AppCompat" version="22.2.0.0"/>
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="..\library\bin\Release\material-drawer-3.0.7.dll" target="lib\MonoAndroid\"/>
+		<file src="..\library\bin\Release\material-drawer-3.0.9.dll" target="lib\MonoAndroid\"/>
 	</files>
 </package>
