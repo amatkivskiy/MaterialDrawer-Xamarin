@@ -2,6 +2,10 @@
 using Mikepenz.MaterialDrawer;
 using Mikepenz.MaterialDrawer.Models.Interfaces;
 using Mikepenz.MaterialDrawer.Models;
+using Mikepenz.Iconics;
+using Mikepenz.Google_material_typeface_library;
+using Mikepenz.Iconics.Typeface;
+using Mikepenz.Octicons_typeface_library;
 
 namespace Sample
 {
@@ -10,11 +14,7 @@ namespace Sample
   using Android.Support.V7.App;
   using Android.Net;
   using Android.Views;
-  using Com.Mikepenz.Google_material_typeface_library;
-  using Com.Mikepenz.Iconics;
   using Android.Widget;
-  using Com.Mikepenz.Iconics.Typeface;
-  using Com.Mikepenz.Octicons_typeface_library;
   using Android.Util;
 
   [Activity(MainLauncher = true, Theme = "@style/MaterialDrawerTheme.Light.DarkToolbar.TranslucentStatus")]
@@ -57,8 +57,8 @@ namespace Sample
           profile5,
           profile6,
           //don't ask but google uses 14dp for the add account icon in gmail but 20dp for the normal icons (like manage account)
-          new ProfileSettingDrawerItem().WithName("Add Account").WithDescription("Add new GitHub Account").WithIcon(new IconicsDrawable(this, GoogleMaterial.Icon.GmdAdd).
-            ActionBarSize().PaddingDp(5).ColorRes(Resource.Color.material_drawer_primary_text)).WithIdentifier(PROFILE_SETTING),
+          new ProfileSettingDrawerItem().WithName("Add Account").WithDescription("Add new GitHub Account").WithIcon(new IconicsDrawable(this, GoogleMaterial.Icon.GmdAdd)
+            .PaddingDp(5).ColorRes(Resource.Color.material_drawer_primary_text)).WithIdentifier(PROFILE_SETTING),
           new ProfileSettingDrawerItem().WithName("Manage Account").WithIcon(GoogleMaterial.Icon.GmdSettings)
         )
         .WithOnAccountHeaderListener(this)

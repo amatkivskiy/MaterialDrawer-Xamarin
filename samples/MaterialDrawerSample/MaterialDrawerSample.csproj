@@ -16,7 +16,7 @@
     <AssemblyName>Sample</AssemblyName>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-    <ReleaseVersion>3.0.7</ReleaseVersion>
+    <ReleaseVersion>3.0.9</ReleaseVersion>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -44,12 +44,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
-    <Reference Include="Picasso">
-      <HintPath>Libs\Picasso.dll</HintPath>
-    </Reference>
-    <Reference Include="android-iconics-1.0.2">
-      <HintPath>..\..\solutions\packages\Mikepenz.Android.Iconics.Xamarin.Binding.1.0.2\lib\MonoAndroid\android-iconics-1.0.2.dll</HintPath>
-    </Reference>
     <Reference Include="Xamarin.Android.Support.v4">
       <HintPath>..\..\solutions\packages\Xamarin.Android.Support.v4.22.2.0.0\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
     </Reference>
@@ -59,11 +53,14 @@
     <Reference Include="Square.OkIO">
       <HintPath>..\..\solutions\packages\Square.OkIO.1.5.0.0\lib\MonoAndroid\Square.OkIO.dll</HintPath>
     </Reference>
-    <Reference Include="Square.OkHttp">
-      <HintPath>..\..\solutions\packages\Square.OkHttp.2.4.0.0\lib\MonoAndroid\Square.OkHttp.dll</HintPath>
-    </Reference>
     <Reference Include="Square.Picasso">
       <HintPath>..\..\solutions\packages\Square.Picasso.2.5.2.1\lib\MonoAndroid\Square.Picasso.dll</HintPath>
+    </Reference>
+    <Reference Include="Square.OkHttp">
+      <HintPath>..\..\solutions\packages\Square.OkHttp.2.4.0.2\lib\MonoAndroid\Square.OkHttp.dll</HintPath>
+    </Reference>
+    <Reference Include="android-iconics-1.2.0">
+      <HintPath>..\..\library\Libs\android-iconics-1.2.0.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -111,16 +108,16 @@
     <AndroidResource Include="Resources\values-v19\styles.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\library\MaterialDrawer.csproj">
+      <Project>{0D0D20CD-8CAB-4C20-9EE6-C0B69E6CE0C4}</Project>
+      <Name>MaterialDrawer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <AndroidAsset Include="Assets\fonts\fontawesome-webfont-4.3.0.ttf" />
     <AndroidAsset Include="Assets\fonts\google_material_design.ttf" />
     <AndroidAsset Include="Assets\fonts\materialdesignicons-webfont.ttf" />
     <AndroidAsset Include="Assets\fonts\meteocons.ttf" />
     <AndroidAsset Include="Assets\fonts\octicons.ttf" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\library\MaterialDrawer.csproj">
-      <Project>{0D0D20CD-8CAB-4C20-9EE6-C0B69E6CE0C4}</Project>
-      <Name>MaterialDrawer</Name>
-    </ProjectReference>
   </ItemGroup>
 </Project>

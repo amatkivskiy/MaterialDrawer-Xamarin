@@ -10,11 +10,11 @@
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
     <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
-    <AssemblyName>material-drawer-3.0.7</AssemblyName>
+    <AssemblyName>material-drawer-3.0.9</AssemblyName>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <ReleaseVersion>3.0.7</ReleaseVersion>
+    <ReleaseVersion>3.0.9</ReleaseVersion>
     <Java7DocPaths>JavaSrc</Java7DocPaths>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -70,6 +70,6 @@
   <Import Project="$(MSBuildExtensionsPath)\Novell\Xamarin.Android.Bindings.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <ItemGroup>
-    <LibraryProjectZip Include="Jars\materialdrawer-3.0.7.aar" />
+    <LibraryProjectZip Include="Jars\materialdrawer-3.0.9.aar" />
   </ItemGroup>
 </Project>
