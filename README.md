@@ -1,4 +1,6 @@
 # MaterialDrawer-Xamarin
+
+[![Join the chat at https://gitter.im/amatkivskiy/MaterialDrawer-Xamarin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/amatkivskiy/MaterialDrawer-Xamarin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Xamarin bindings for https://github.com/mikepenz/MaterialDrawer
 
 ## Download
