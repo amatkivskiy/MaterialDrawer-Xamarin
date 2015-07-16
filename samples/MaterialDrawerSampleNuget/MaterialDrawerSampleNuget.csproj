@@ -63,6 +63,9 @@
     <Reference Include="android-iconics-1.2.1">
       <HintPath>..\..\solutions\packages\Mikepenz.Android.Iconics.Xamarin.Binding.1.2.1\lib\MonoAndroid\android-iconics-1.2.1.dll</HintPath>
     </Reference>
+    <Reference Include="material-drawer-3.1.2">
+      <HintPath>..\..\solutions\packages\Mikepenz.MaterialDrawer.Xamarin.Android.3.1.2\lib\MonoAndroid\material-drawer-3.1.2.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
