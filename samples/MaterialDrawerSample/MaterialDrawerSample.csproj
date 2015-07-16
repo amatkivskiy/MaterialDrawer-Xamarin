@@ -30,6 +30,7 @@
     <ConsolePause>false</ConsolePause>
     <AndroidLinkMode>None</AndroidLinkMode>
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+    <AndroidSupportedAbis>armeabi;armeabi-v7a;x86;arm64-v8a;x86_64</AndroidSupportedAbis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -38,6 +39,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <AndroidSupportedAbis>armeabi;armeabi-v7a;x86;arm64-v8a;x86_64</AndroidSupportedAbis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -59,8 +61,8 @@
     <Reference Include="Square.OkHttp">
       <HintPath>..\..\solutions\packages\Square.OkHttp.2.4.0.2\lib\MonoAndroid\Square.OkHttp.dll</HintPath>
     </Reference>
-    <Reference Include="android-iconics-1.2.0">
-      <HintPath>..\..\library\Libs\android-iconics-1.2.0.dll</HintPath>
+    <Reference Include="android-iconics-1.2.1">
+      <HintPath>..\..\solutions\packages\Mikepenz.Android.Iconics.Xamarin.Binding.1.2.1\lib\MonoAndroid\android-iconics-1.2.1.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
