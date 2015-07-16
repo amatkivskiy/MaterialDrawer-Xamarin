@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Mikepenz.MaterialDrawer.Xamarin.Android</id>
-		<version>3.0.9</version>
+		<version>3.1.2</version>
 		<title>MaterialDrawer for Xamarin.Android</title>
 		<authors>Andriy Matkivskiy</authors>
 		<owners>amatkivskiy</owners>
@@ -15,18 +15,21 @@ https://github.com/mikepenz/MaterialDrawer</description>
 		<summary>Xamarin binding for MaterialDrawer https://github.com/mikepenz/MaterialDrawer</summary>
 		<tags>Android Xamarin Drawer Material</tags>
 		<releaseNotes>
-			Updated version to 3.0.9
-			Renamed main namespace to Mikepenz.MaterialDrawer.
+			Updated version to 3.1.2
+			Fixed bug: "System.IO.FileNotFoundException: Could not load assembly 'android-iconics-1.2.0"
 
-			3.0.9
-				- update Android-Iconics to v1.2.0
-				- fix possible IndexOutOfBoundsException
-				- add new method to get DrawerContentRoot
-			3.0.8
-				- update Android-Iconics to v1.1.0 --> Now Supports text to create Drawables from ;) This will perhaps FIX (help) #423
-				- add new properties to support and FIX #433
-				- improve RTL Layout and fix #429
-				- update AboutLibraries
+			3.1.2
+			3.1.1
+				- fix wrong position returned inside the setListSelection methods list firing thanks @wKovacs64 ;)
+				- reset text inside Nameable items before setting it to the new value
+				- remove setting the padding for the stickyFooterItems
+				- switch to use gravity inside the DrawerBuilder everywhere instead of the sliderLayout
+				- use shadow for pre 21 devices
+			3.1.0
+				- fix typo in withSelectionFirstLineShown
+				- prevent another IndexOutOfBounds exception
+				- Fix colors_material_design.xml
+				- Add description text color
 		</releaseNotes>
 		<dependencies>
 			<dependency id="Mikepenz.Android.Iconics.Xamarin.Binding" version="1.2.0"/>
@@ -35,6 +38,6 @@ https://github.com/mikepenz/MaterialDrawer</description>
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="..\library\bin\Release\material-drawer-3.0.9.dll" target="lib\MonoAndroid\"/>
+		<file src="..\library\bin\Release\material-drawer-3.1.2.dll" target="lib\MonoAndroid\"/>
 	</files>
 </package>

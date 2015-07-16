@@ -20,4 +20,5 @@
   <!-- Removed deprecated methods. -->
   <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='BaseDrawerItem']/method[@name='withTintSelectedIcon' and count(parameter)=1 and parameter[1][@type='boolean']]"/>
   <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='BaseDrawerItem']/method[@name='withIconTinted' and count(parameter)=1 and parameter[1][@type='boolean']]"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.accountswitcher']/class[@name='AccountHeaderBuilder']/method[@name='withSelectionFistLineShown' and count(parameter)=1 and parameter[1][@type='boolean']]"/>
 </metadata>

@@ -68,11 +68,7 @@ public class Drawer {
      */
     public void openDrawer() {
         if (mDrawerBuilder.mDrawerLayout != null && mDrawerBuilder.mSliderLayout != null) {
-            if (mDrawerBuilder.mDrawerGravity != null) {
-                mDrawerBuilder.mDrawerLayout.openDrawer(mDrawerBuilder.mDrawerGravity);
-            } else {
-                mDrawerBuilder.mDrawerLayout.openDrawer(mDrawerBuilder.mSliderLayout);
-            }
+            mDrawerBuilder.mDrawerLayout.openDrawer(mDrawerBuilder.mDrawerGravity);
         }
     }
 
@@ -81,11 +77,7 @@ public class Drawer {
      */
     public void closeDrawer() {
         if (mDrawerBuilder.mDrawerLayout != null) {
-            if (mDrawerBuilder.mDrawerGravity != null) {
-                mDrawerBuilder.mDrawerLayout.closeDrawer(mDrawerBuilder.mDrawerGravity);
-            } else {
-                mDrawerBuilder.mDrawerLayout.closeDrawer(mDrawerBuilder.mSliderLayout);
-            }
+            mDrawerBuilder.mDrawerLayout.closeDrawer(mDrawerBuilder.mDrawerGravity);
         }
     }
 
@@ -97,7 +89,7 @@ public class Drawer {
      */
     public boolean isDrawerOpen() {
         if (mDrawerBuilder.mDrawerLayout != null && mDrawerBuilder.mSliderLayout != null) {
-            return mDrawerBuilder.mDrawerLayout.isDrawerOpen(mDrawerBuilder.mSliderLayout);
+            return mDrawerBuilder.mDrawerLayout.isDrawerOpen(mDrawerBuilder.mDrawerGravity);
         }
         return false;
     }
@@ -574,8 +566,8 @@ public class Drawer {
             IDrawerItem drawerItem = mDrawerBuilder.mDrawerItems.get(position);
 
             if (drawerItem instanceof Nameable) {
-                ((Nameable) drawerItem).setNameRes(nameRes);
                 ((Nameable) drawerItem).setName(null);
+                ((Nameable) drawerItem).setNameRes(nameRes);
             }
 
             mDrawerBuilder.mDrawerItems.set(position, drawerItem);
@@ -594,8 +586,8 @@ public class Drawer {
             IDrawerItem drawerItem = mDrawerBuilder.mDrawerItems.get(position);
 
             if (drawerItem instanceof Nameable) {
-                ((Nameable) drawerItem).setName(name);
                 ((Nameable) drawerItem).setNameRes(-1);
+                ((Nameable) drawerItem).setName(name);
             }
 
             mDrawerBuilder.mDrawerItems.set(position, drawerItem);
