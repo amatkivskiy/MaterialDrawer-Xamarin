@@ -1,14 +1,16 @@
-package com.mikepenz.materialdrawer.accountswitcher;
+package com.mikepenz.materialdrawer;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.holder.ImageHolder;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
-import com.mikepenz.materialdrawer.model.interfaces.Identifyable;
+import com.mikepenz.materialdrawer.util.IdDistributor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +24,7 @@ public class AccountHeader {
     protected static final String BUNDLE_SELECTION_HEADER = "bundle_selection_header";
 
 
-    private final AccountHeaderBuilder mAccountHeaderBuilder;
+    protected final AccountHeaderBuilder mAccountHeaderBuilder;
 
     protected AccountHeader(AccountHeaderBuilder accountHeaderBuilder) {
         this.mAccountHeaderBuilder = accountHeaderBuilder;
@@ -56,6 +58,15 @@ public class AccountHeader {
     }
 
     /**
+     * set the background for the header via the ImageHolder class
+     *
+     * @param imageHolder
+     */
+    public void setHeaderBackground(ImageHolder imageHolder) {
+        ImageHolder.applyTo(imageHolder, mAccountHeaderBuilder.mAccountHeaderBackground);
+    }
+
+    /**
      * Set the background for the Header
      *
      * @param headerBackground
@@ -69,7 +80,7 @@ public class AccountHeader {
      *
      * @param headerBackgroundRes
      */
-    public void setBackgroundRes(int headerBackgroundRes) {
+    public void setBackgroundRes(@DrawableRes int headerBackgroundRes) {
         mAccountHeaderBuilder.mAccountHeaderBackground.setImageResource(headerBackgroundRes);
     }
 
@@ -91,6 +102,49 @@ public class AccountHeader {
         return mAccountHeaderBuilder.mSelectionListShown;
     }
 
+
+    /**
+     * set this to false if you want to hide the first line of the selection box in the header (first line would be the name)
+     *
+     * @param selectionFirstLineShown
+     */
+    public void setSelectionFirstLineShown(boolean selectionFirstLineShown) {
+        mAccountHeaderBuilder.mSelectionFirstLineShown = selectionFirstLineShown;
+        mAccountHeaderBuilder.updateHeaderAndList();
+    }
+
+    /**
+     * set this to false if you want to hide the second line of the selection box in the header (second line would be the e-mail)
+     *
+     * @param selectionSecondLineShown
+     */
+    public void setSelectionSecondLineShown(boolean selectionSecondLineShown) {
+        mAccountHeaderBuilder.mSelectionSecondLineShown = selectionSecondLineShown;
+        mAccountHeaderBuilder.updateHeaderAndList();
+    }
+
+    /**
+     * set this to define the first line in the selection area if there is no profile
+     * note this will block any values from profiles!
+     *
+     * @param selectionFirstLine
+     */
+    public void setSelectionFirstLine(String selectionFirstLine) {
+        mAccountHeaderBuilder.mSelectionFirstLine = selectionFirstLine;
+        mAccountHeaderBuilder.updateHeaderAndList();
+    }
+
+    /**
+     * set this to define the second line in the selection area if there is no profile
+     * note this will block any values from profiles!
+     *
+     * @param selectionSecondLine
+     */
+    public void setSelectionSecondLine(String selectionSecondLine) {
+        mAccountHeaderBuilder.mSelectionSecondLine = selectionSecondLine;
+        mAccountHeaderBuilder.updateHeaderAndList();
+    }
+
     /**
      * returns the current list of profiles set for this header
      *
@@ -106,7 +160,7 @@ public class AccountHeader {
      * @param profiles
      */
     public void setProfiles(ArrayList<IProfile> profiles) {
-        mAccountHeaderBuilder.mProfiles = profiles;
+        mAccountHeaderBuilder.mProfiles = IdDistributor.checkIds(profiles);
         mAccountHeaderBuilder.updateHeaderAndList();
     }
 
@@ -126,6 +180,11 @@ public class AccountHeader {
      */
     public void setActiveProfile(IProfile profile, boolean fireOnProfileChanged) {
         final boolean isCurrentSelectedProfile = mAccountHeaderBuilder.switchProfiles(profile);
+        //if the selectionList is shown we should also update the current selected profile in the list
+        if (mAccountHeaderBuilder.mDrawer != null && isSelectionListShown()) {
+            mAccountHeaderBuilder.mDrawer.setSelection(profile.getIdentifier(), false);
+        }
+        //fire the event if enabled and a listener is set
         if (fireOnProfileChanged && mAccountHeaderBuilder.mOnAccountHeaderListener != null) {
             mAccountHeaderBuilder.mOnAccountHeaderListener.onProfileChanged(null, profile, isCurrentSelectedProfile);
         }
@@ -148,7 +207,7 @@ public class AccountHeader {
     public void setActiveProfile(int identifier, boolean fireOnProfileChanged) {
         if (mAccountHeaderBuilder.mProfiles != null) {
             for (IProfile profile : mAccountHeaderBuilder.mProfiles) {
-                if (profile instanceof Identifyable) {
+                if (profile != null) {
                     if (profile.getIdentifier() == identifier) {
                         setActiveProfile(profile, fireOnProfileChanged);
                         return;
@@ -159,41 +218,50 @@ public class AccountHeader {
     }
 
     /**
+     * get the current active profile
+     *
+     * @return
+     */
+    public IProfile getActiveProfile() {
+        return mAccountHeaderBuilder.mCurrentProfile;
+    }
+
+
+    /**
      * Helper method to update a profile using it's identifier
      *
      * @param newProfile
      */
-    public void updateProfileByIdentifier(IProfile newProfile) {
-        if (mAccountHeaderBuilder.mProfiles != null && newProfile != null && newProfile.getIdentifier() >= 0) {
-            int found = -1;
-            for (int i = 0; i < mAccountHeaderBuilder.mProfiles.size(); i++) {
-                if (mAccountHeaderBuilder.mProfiles.get(i) instanceof Identifyable) {
-                    if (mAccountHeaderBuilder.mProfiles.get(i).getIdentifier() == newProfile.getIdentifier()) {
-                        found = i;
-                        break;
-                    }
-                }
-            }
+    public void updateProfile(@NonNull IProfile newProfile) {
+        updateProfileByIdentifier(newProfile);
+    }
 
-            if (found > -1) {
-                mAccountHeaderBuilder.mProfiles.set(found, newProfile);
-                mAccountHeaderBuilder.updateHeaderAndList();
-            }
+    /**
+     * Helper method to update a profile using it's identifier
+     *
+     * @param newProfile
+     */
+    @Deprecated
+    public void updateProfileByIdentifier(@NonNull IProfile newProfile) {
+        int found = getPositionByIdentifier(newProfile.getIdentifier());
+        if (found > -1) {
+            mAccountHeaderBuilder.mProfiles.set(found, newProfile);
+            mAccountHeaderBuilder.updateHeaderAndList();
         }
     }
+
 
     /**
      * Add new profiles to the existing list of profiles
      *
      * @param profiles
      */
-    public void addProfiles(IProfile... profiles) {
+    public void addProfiles(@NonNull IProfile... profiles) {
         if (mAccountHeaderBuilder.mProfiles == null) {
             mAccountHeaderBuilder.mProfiles = new ArrayList<>();
         }
-        if (profiles != null) {
-            Collections.addAll(mAccountHeaderBuilder.mProfiles, profiles);
-        }
+
+        Collections.addAll(mAccountHeaderBuilder.mProfiles, IdDistributor.checkIds(profiles));
 
         mAccountHeaderBuilder.updateHeaderAndList();
     }
@@ -204,11 +272,11 @@ public class AccountHeader {
      * @param profile
      * @param position
      */
-    public void addProfile(IProfile profile, int position) {
+    public void addProfile(@NonNull IProfile profile, int position) {
         if (mAccountHeaderBuilder.mProfiles == null) {
             mAccountHeaderBuilder.mProfiles = new ArrayList<>();
         }
-        mAccountHeaderBuilder.mProfiles.add(position, profile);
+        mAccountHeaderBuilder.mProfiles.add(position, IdDistributor.checkId(profile));
 
         mAccountHeaderBuilder.updateHeaderAndList();
     }
@@ -227,16 +295,26 @@ public class AccountHeader {
     }
 
     /**
+     * remove the profile with the given identifier
+     *
+     * @param identifier
+     */
+    public void removeProfileByIdentifier(int identifier) {
+        int found = getPositionByIdentifier(identifier);
+        if (found > -1) {
+            mAccountHeaderBuilder.mProfiles.remove(found);
+        }
+
+        mAccountHeaderBuilder.updateHeaderAndList();
+    }
+
+    /**
      * try to remove the given profile
      *
      * @param profile
      */
-    public void removeProfile(IProfile profile) {
-        if (mAccountHeaderBuilder.mProfiles != null) {
-            mAccountHeaderBuilder.mProfiles.remove(profile);
-        }
-
-        mAccountHeaderBuilder.updateHeaderAndList();
+    public void removeProfile(@NonNull IProfile profile) {
+        removeProfileByIdentifier(profile.getIdentifier());
     }
 
     /**
@@ -250,6 +328,27 @@ public class AccountHeader {
 
         //process and build the profiles
         mAccountHeaderBuilder.buildProfiles();
+    }
+
+    /**
+     * gets the position of a profile by it's identifier
+     *
+     * @param identifier
+     * @return
+     */
+    private int getPositionByIdentifier(int identifier) {
+        int found = -1;
+        if (mAccountHeaderBuilder.mProfiles != null && identifier >= 0) {
+            for (int i = 0; i < mAccountHeaderBuilder.mProfiles.size(); i++) {
+                if (mAccountHeaderBuilder.mProfiles.get(i) != null) {
+                    if (mAccountHeaderBuilder.mProfiles.get(i).getIdentifier() == identifier) {
+                        found = i;
+                        break;
+                    }
+                }
+            }
+        }
+        return found;
     }
 
     /**
@@ -274,7 +373,39 @@ public class AccountHeader {
          * @param profile
          * @return if the event was consumed
          */
-        public boolean onProfileChanged(View view, IProfile profile, boolean current);
+        boolean onProfileChanged(View view, IProfile profile, boolean current);
+    }
+
+    public interface OnAccountHeaderItemLongClickListener {
+        /**
+         * the event when the profile item is longClicked inside the list
+         *
+         * @param view
+         * @param profile
+         * @param current
+         * @return if the event was consumed
+         */
+        boolean onProfileLongClick(View view, IProfile profile, boolean current);
+    }
+
+    public interface OnAccountHeaderProfileImageListener {
+        /**
+         * the event when the profile image is clicked
+         *
+         * @param view
+         * @param profile
+         * @return if the event was consumed
+         */
+        boolean onProfileImageClick(View view, IProfile profile, boolean current);
+
+        /**
+         * the event when the profile image is long clicked
+         *
+         * @param view
+         * @param profile
+         * @return if the event was consumed
+         */
+        boolean onProfileImageLongClick(View view, IProfile profile, boolean current);
     }
 
     public interface OnAccountHeaderSelectionViewClickListener {
@@ -285,6 +416,6 @@ public class AccountHeader {
          * @param profile
          * @return if the event was consumed
          */
-        public boolean onClick(View view, IProfile profile);
+        boolean onClick(View view, IProfile profile);
     }
 }

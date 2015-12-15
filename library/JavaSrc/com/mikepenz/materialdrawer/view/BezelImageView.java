@@ -64,6 +64,7 @@ public class BezelImageView extends ImageView {
     private RectF mBoundsF;
 
     private Drawable mMaskDrawable;
+    private boolean mDrawCircularShadow = true;
 
     private ColorMatrixColorFilter mDesaturateColorFilter;
 
@@ -91,13 +92,14 @@ public class BezelImageView extends ImageView {
         super(context, attrs, defStyle);
 
         // Attribute initialization
-        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BezelImageView,
-                defStyle, 0);
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BezelImageView, defStyle, R.style.BezelImageView);
 
         mMaskDrawable = a.getDrawable(R.styleable.BezelImageView_biv_maskDrawable);
         if (mMaskDrawable != null) {
             mMaskDrawable.setCallback(this);
         }
+
+        mDrawCircularShadow = a.getBoolean(R.styleable.BezelImageView_biv_drawCircularShadow, true);
 
         mSelectorColor = a.getColor(R.styleable.BezelImageView_biv_selectorOnPress, 0);
 
@@ -127,7 +129,9 @@ public class BezelImageView extends ImageView {
     @Override
     protected void onSizeChanged(int w, int h, int old_w, int old_h) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setOutlineProvider(new CustomOutline(w, h));
+            if (mDrawCircularShadow) {
+                setOutlineProvider(new CustomOutline(w, h));
+            }
         }
     }
 
@@ -299,28 +303,26 @@ public class BezelImageView extends ImageView {
         this.invalidate();
     }
 
+
     @Override
     public void setImageDrawable(Drawable drawable) {
-        DrawerImageLoader.getInstance().cancelImage(this);
         super.setImageDrawable(drawable);
     }
 
     @Override
     public void setImageResource(int resId) {
-        DrawerImageLoader.getInstance().cancelImage(this);
         super.setImageResource(resId);
     }
 
     @Override
     public void setImageBitmap(Bitmap bm) {
-        DrawerImageLoader.getInstance().cancelImage(this);
         super.setImageBitmap(bm);
     }
 
     @Override
     public void setImageURI(Uri uri) {
         if ("http".equals(uri.getScheme()) || "https".equals(uri.getScheme())) {
-            DrawerImageLoader.getInstance().setImage(this, uri);
+            DrawerImageLoader.getInstance().setImage(this, uri, null);
         } else {
             super.setImageURI(uri);
         }

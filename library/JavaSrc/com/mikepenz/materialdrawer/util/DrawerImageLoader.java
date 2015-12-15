@@ -3,16 +3,22 @@ package com.mikepenz.materialdrawer.util;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.ImageView;
 
 /**
  * Created by mikepenz on 24.03.15.
  */
 public class DrawerImageLoader {
+    public enum Tags {
+        PROFILE,
+        PROFILE_DRAWER_ITEM,
+        ACCOUNT_HEADER
+    }
+
     private static DrawerImageLoader SINGLETON = null;
 
     private IDrawerImageLoader imageLoader;
+    private boolean mHandleAllUris = false;
 
     private DrawerImageLoader(IDrawerImageLoader loaderImpl) {
         imageLoader = loaderImpl;
@@ -25,37 +31,33 @@ public class DrawerImageLoader {
 
     public static DrawerImageLoader getInstance() {
         if (SINGLETON == null) {
-            SINGLETON = new DrawerImageLoader(new IDrawerImageLoader() {
-                @Override
-                public void set(ImageView imageView, Uri uri, Drawable placeholder) {
-                    //this won't do anything
-                    Log.i("MaterialDrawer", "you have not specified a ImageLoader implementation through the DrawerImageLoader.init(IDrawerImageLoader) method");
-                }
-
-                @Override
-                public void cancel(ImageView imageView) {
-
-                }
-
-                @Override
-                public Drawable placeholder(Context ctx) {
-                    return null;
-                }
+            SINGLETON = new DrawerImageLoader(new AbstractDrawerImageLoader() {
             });
         }
         return SINGLETON;
     }
 
-    public void setImage(ImageView imageView, Uri uri) {
-        if (imageLoader != null) {
-            Drawable placeHolder = imageLoader.placeholder(imageView.getContext());
+    public DrawerImageLoader withHandleAllUris(boolean handleAllUris) {
+        this.mHandleAllUris = handleAllUris;
+        return this;
+    }
 
-            if (placeHolder == null) {
-                placeHolder = UIUtils.getPlaceHolder(imageView.getContext());
+    /**
+     * @param imageView
+     * @param uri
+     * @param tag
+     * @return false if not consumed
+     */
+    public boolean setImage(ImageView imageView, Uri uri, String tag) {
+        //if we do not handle all uris and are not http or https we keep the original behavior
+        if (mHandleAllUris || "http".equals(uri.getScheme()) || "https".equals(uri.getScheme())) {
+            if (imageLoader != null) {
+                Drawable placeHolder = imageLoader.placeholder(imageView.getContext(), tag);
+                imageLoader.set(imageView, uri, placeHolder);
             }
-
-            imageLoader.set(imageView, uri, placeHolder);
+            return true;
         }
+        return false;
     }
 
     public void cancelImage(ImageView imageView) {
@@ -73,10 +75,17 @@ public class DrawerImageLoader {
     }
 
     public interface IDrawerImageLoader {
-        public void set(ImageView imageView, Uri uri, Drawable placeholder);
+        void set(ImageView imageView, Uri uri, Drawable placeholder);
 
-        public void cancel(ImageView imageView);
+        void cancel(ImageView imageView);
 
-        public Drawable placeholder(Context ctx);
+        Drawable placeholder(Context ctx);
+
+        /**
+         * @param ctx
+         * @param tag current possible tags: "profile", "profileDrawerItem", "accountHeader"
+         * @return
+         */
+        Drawable placeholder(Context ctx, String tag);
     }
 }

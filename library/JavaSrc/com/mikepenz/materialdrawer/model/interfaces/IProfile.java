@@ -3,52 +3,39 @@ package com.mikepenz.materialdrawer.model.interfaces;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.annotation.DrawableRes;
+
+import com.mikepenz.iconics.typeface.IIcon;
+import com.mikepenz.materialdrawer.holder.ImageHolder;
+import com.mikepenz.materialdrawer.holder.StringHolder;
 
 /**
  * Created by mikepenz on 03.02.15.
  */
-public interface IProfile<T> {
-    public T withName(String name);
+public interface IProfile<T> extends Identifyable<T> {
+    T withName(String name);
 
-    public String getName();
+    StringHolder getName();
 
-    public void setName(String name);
+    T withEmail(String email);
 
-    public T withEmail(String email);
+    StringHolder getEmail();
 
-    public String getEmail();
+    T withIcon(Drawable icon);
 
-    public void setEmail(String email);
+    T withIcon(Bitmap bitmap);
 
-    public T withIcon(Drawable icon);
+    T withIcon(@DrawableRes int iconRes);
 
-    public T withIcon(Bitmap bitmap);
+    T withIcon(String url);
 
-    public T withIcon(String url);
+    T withIcon(Uri uri);
 
-    public T withIcon(Uri uri);
+    T withIcon(IIcon icon);
 
-    public Drawable getIcon();
+    ImageHolder getIcon();
 
-    public Bitmap getIconBitmap();
+    T withSelectable(boolean selectable);
 
-    public Uri getIconUri();
-
-    public void setIcon(Drawable icon);
-
-    public void setIconBitmap(Bitmap bitmap);
-
-    public void setIcon(String url);
-
-    public void setIcon(Uri uri);
-
-
-    public T withSelectable(boolean selectable);
-
-    public boolean isSelectable();
-
-    public T setSelectable(boolean selectable);
-
-    public int getIdentifier();
-
+    boolean isSelectable();
 }

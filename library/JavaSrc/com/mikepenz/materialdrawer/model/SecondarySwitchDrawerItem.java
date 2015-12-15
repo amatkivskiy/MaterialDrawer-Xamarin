@@ -2,9 +2,9 @@ package com.mikepenz.materialdrawer.model;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.ToggleButton;
 
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.R;
@@ -15,60 +15,53 @@ import com.mikepenz.materialdrawer.model.utils.ViewHolderFactory;
 /**
  * Created by mikepenz on 03.02.15.
  */
-public class ToggleDrawerItem extends BasePrimaryDrawerItem<ToggleDrawerItem> {
-    private boolean toggleEnabled = true;
+public class SecondarySwitchDrawerItem extends BaseSecondaryDrawerItem<SecondarySwitchDrawerItem> {
+
+    private boolean switchEnabled = true;
 
     private boolean checked = false;
     private OnCheckedChangeListener onCheckedChangeListener = null;
 
-    public ToggleDrawerItem withChecked(boolean checked) {
+    public SecondarySwitchDrawerItem withChecked(boolean checked) {
         this.checked = checked;
         return this;
     }
 
-    public ToggleDrawerItem withToggleEnabled(boolean toggleEnabled) {
-        this.toggleEnabled = toggleEnabled;
+    public SecondarySwitchDrawerItem withSwitchEnabled(boolean switchEnabled) {
+        this.switchEnabled = switchEnabled;
         return this;
     }
 
-    public ToggleDrawerItem withOnCheckedChangeListener(OnCheckedChangeListener onCheckedChangeListener) {
+    public SecondarySwitchDrawerItem withOnCheckedChangeListener(OnCheckedChangeListener onCheckedChangeListener) {
         this.onCheckedChangeListener = onCheckedChangeListener;
         return this;
+    }
+
+    public SecondarySwitchDrawerItem withCheckable(boolean checkable) {
+        return withSelectable(checkable);
     }
 
     public boolean isChecked() {
         return checked;
     }
 
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-    }
-
-    public boolean isToggleEnabled() {
-        return toggleEnabled;
-    }
-
-    public void setToggleEnabled(boolean toggleEnabled) {
-        this.toggleEnabled = toggleEnabled;
+    public boolean isSwitchEnabled() {
+        return switchEnabled;
     }
 
     public OnCheckedChangeListener getOnCheckedChangeListener() {
         return onCheckedChangeListener;
     }
 
-    public void setOnCheckedChangeListener(OnCheckedChangeListener onCheckedChangeListener) {
-        this.onCheckedChangeListener = onCheckedChangeListener;
-    }
-
     @Override
     public String getType() {
-        return "TOGGLE_ITEM";
+        return "SECONDARY_SWITCH_ITEM";
     }
 
     @Override
     @LayoutRes
     public int getLayoutRes() {
-        return R.layout.material_drawer_item_toggle;
+        return R.layout.material_drawer_item_secondary_switch;
     }
 
     @Override
@@ -79,11 +72,11 @@ public class ToggleDrawerItem extends BasePrimaryDrawerItem<ToggleDrawerItem> {
         //bind the basic view parts
         bindViewHelper((BaseViewHolder) holder);
 
-        //handle the toggle
-        viewHolder.toggle.setOnCheckedChangeListener(null);
-        viewHolder.toggle.setChecked(checked);
-        viewHolder.toggle.setOnCheckedChangeListener(checkedChangeListener);
-        viewHolder.toggle.setEnabled(toggleEnabled);
+        //handle the switch
+        viewHolder.switchView.setOnCheckedChangeListener(null);
+        viewHolder.switchView.setChecked(checked);
+        viewHolder.switchView.setOnCheckedChangeListener(checkedChangeListener);
+        viewHolder.switchView.setEnabled(switchEnabled);
 
         //add a onDrawerItemClickListener here to be able to check / uncheck if the drawerItem can't be selected
         withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -91,7 +84,7 @@ public class ToggleDrawerItem extends BasePrimaryDrawerItem<ToggleDrawerItem> {
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                 if (!isSelectable()) {
                     checked = !checked;
-                    viewHolder.toggle.setChecked(checked);
+                    viewHolder.switchView.setChecked(checked);
                 }
 
                 return false;
@@ -114,11 +107,11 @@ public class ToggleDrawerItem extends BasePrimaryDrawerItem<ToggleDrawerItem> {
     }
 
     private static class ViewHolder extends BaseViewHolder {
-        private ToggleButton toggle;
+        private SwitchCompat switchView;
 
         private ViewHolder(View view) {
             super(view);
-            this.toggle = (ToggleButton) view.findViewById(R.id.material_drawer_toggle);
+            this.switchView = (SwitchCompat) view.findViewById(R.id.material_drawer_switch);
         }
     }
 
@@ -128,7 +121,7 @@ public class ToggleDrawerItem extends BasePrimaryDrawerItem<ToggleDrawerItem> {
             if (isEnabled()) {
                 checked = isChecked;
                 if (getOnCheckedChangeListener() != null) {
-                    getOnCheckedChangeListener().onCheckedChanged(ToggleDrawerItem.this, buttonView, isChecked);
+                    getOnCheckedChangeListener().onCheckedChanged(SecondarySwitchDrawerItem.this, buttonView, isChecked);
                 }
             } else {
                 buttonView.setOnCheckedChangeListener(null);

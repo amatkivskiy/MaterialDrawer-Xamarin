@@ -2,33 +2,52 @@ package com.mikepenz.materialdrawer;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DimenRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.MenuRes;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.view.SupportMenuInflater;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.mikepenz.iconics.utils.Utils;
-import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
 import com.mikepenz.materialdrawer.adapter.BaseDrawerAdapter;
 import com.mikepenz.materialdrawer.adapter.DrawerAdapter;
-import com.mikepenz.materialdrawer.model.interfaces.Checkable;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.util.UIUtils;
-import com.mikepenz.materialdrawer.view.ScrimInsetsFrameLayout;
+import com.mikepenz.materialdrawer.model.interfaces.Selectable;
+import com.mikepenz.materialdrawer.util.IdDistributor;
+import com.mikepenz.materialdrawer.util.RecyclerViewCacheUtil;
+import com.mikepenz.materialize.Materialize;
+import com.mikepenz.materialize.MaterializeBuilder;
+import com.mikepenz.materialize.util.UIUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,50 +61,57 @@ public class DrawerBuilder {
     // variable to check if a builder is only used once
     protected boolean mUsed = false;
     protected int mCurrentSelection = -1;
-    protected int mCurrentFooterSelection = -1;
+    protected int mCurrentStickyFooterSelection = -1;
+    protected boolean mAppended = false;
 
     // the activity to use
     protected Activity mActivity;
+    protected RecyclerView.LayoutManager mLayoutManager;
     protected ViewGroup mRootView;
-    protected ScrimInsetsFrameLayout mDrawerContentRoot;
+    protected Materialize mMaterialize;
 
     /**
      * default constructor
      */
     public DrawerBuilder() {
-
+        //make sure there are no elements in the cache from the previous activity
+        //this should only happen and cause troubles if you switch themes over activities
+        //but to make sure it works ;)
+        RecyclerViewCacheUtil.getInstance().clear();
     }
 
     /**
-     * constructor with activity instead of
+     * Construct a Drawer by passing the activity to use for the generation
      *
-     * @param activity
+     * @param activity current activity which will contain the drawer
      */
-    public DrawerBuilder(Activity activity) {
+    public DrawerBuilder(@NonNull Activity activity) {
         this.mRootView = (ViewGroup) activity.findViewById(android.R.id.content);
         this.mActivity = activity;
+        this.mLayoutManager = new LinearLayoutManager(mActivity);
     }
 
     /**
-     * Pass the activity you use the drawer in ;)
-     * This is required if you want to set any values by resource
+     * Sets the activity which will be generated for the generation
+     * The activity is required and will be used to inflate the content in.
+     * After generation it is set to null to prevent a memory leak.
      *
-     * @param activity
-     * @return
+     * @param activity current activity which will contain the drawer
      */
-    public DrawerBuilder withActivity(Activity activity) {
+    public DrawerBuilder withActivity(@NonNull Activity activity) {
         this.mRootView = (ViewGroup) activity.findViewById(android.R.id.content);
         this.mActivity = activity;
+        this.mLayoutManager = new LinearLayoutManager(mActivity);
         return this;
     }
 
     /**
-     * Pass the rootView of the DrawerBuilder which will be used to inflate the DrawerLayout in
+     * Sets the rootView which will host the DrawerLayout
+     * The content of this view will be extracted and added as the new content inside the drawerLayout
      *
-     * @param rootView
-     * @return
+     * @param rootView a view which will get switched out by the DrawerLayout and added as its child
      */
-    public DrawerBuilder withRootView(ViewGroup rootView) {
+    public DrawerBuilder withRootView(@NonNull ViewGroup rootView) {
         this.mRootView = rootView;
 
         //disable the translucent statusBar we don't need it
@@ -95,12 +121,12 @@ public class DrawerBuilder {
     }
 
     /**
-     * Pass the rootView as resource of the DrawerBuilder which will be used to inflate the DrawerLayout in
+     * Sets the rootView which will host the DrawerLayout
+     * The content of this view will be extracted and added as the new content inside the drawerLayout
      *
-     * @param rootViewRes
-     * @return
+     * @param rootViewRes the id of a view which will get switched out by the DrawerLayout and added as its child
      */
-    public DrawerBuilder withRootView(int rootViewRes) {
+    public DrawerBuilder withRootView(@IdRes int rootViewRes) {
         if (mActivity == null) {
             throw new RuntimeException("please pass an activity first to use this call");
         }
@@ -108,41 +134,14 @@ public class DrawerBuilder {
         return withRootView((ViewGroup) mActivity.findViewById(rootViewRes));
     }
 
-    // set actionbar Compatibility mode
-    protected boolean mTranslucentActionBarCompatibility = false;
-
-    /**
-     * Set this to true to use a translucent StatusBar in an activity with a good old
-     * ActionBar. Should be a rare scenario.
-     *
-     * @param translucentActionBarCompatibility
-     * @return
-     */
-    public DrawerBuilder withTranslucentActionBarCompatibility(boolean translucentActionBarCompatibility) {
-        this.mTranslucentActionBarCompatibility = translucentActionBarCompatibility;
-        return this;
-    }
-
-    /**
-     * Set this to true if you want your drawer to be displayed below the toolbar.
-     * Note this will add a margin above the drawer
-     *
-     * @param displayBelowToolbar
-     * @return
-     */
-    public DrawerBuilder withDisplayBelowToolbar(boolean displayBelowToolbar) {
-        this.mTranslucentActionBarCompatibility = displayBelowToolbar;
-        return this;
-    }
-
     // set non translucent statusBar mode
     protected boolean mTranslucentStatusBar = true;
 
     /**
-     * Set to false to disable the use of a translucent statusBar
+     * Sets that the view which hosts the DrawerLayout should have a translucent statusBar
+     * This is true by default, so it's possible to display the drawer under the statusBar
      *
-     * @param translucentStatusBar
-     * @return
+     * @param translucentStatusBar sets whether the statusBar is transparent (and the drawer is displayed under it) or not
      */
     public DrawerBuilder withTranslucentStatusBar(boolean translucentStatusBar) {
         this.mTranslucentStatusBar = translucentStatusBar;
@@ -154,14 +153,13 @@ public class DrawerBuilder {
         return this;
     }
 
-    // set if we want to display the specific Drawer below the statusbar
+    // set if we want to display the specific Drawer below the statusBar
     protected Boolean mDisplayBelowStatusBar;
 
     /**
-     * set to true if the current drawer should be displayed below the statusBar
+     * Sets that the slider of this Drawer should be displayed below the statusBar even with a translucentStatusBar
      *
-     * @param displayBelowStatusBar
-     * @return
+     * @param displayBelowStatusBar sets wheter the slider of the drawer is displayed below the statusBar or not
      */
     public DrawerBuilder withDisplayBelowStatusBar(boolean displayBelowStatusBar) {
         this.mDisplayBelowStatusBar = displayBelowStatusBar;
@@ -173,11 +171,10 @@ public class DrawerBuilder {
     protected boolean mTranslucentStatusBarProgrammatically = true;
 
     /**
-     * set this to false if you want no translucent statusBar. or
-     * if you want to create this behavior only by theme.
+     * Sets if the drawer should handle and make the statusBar translucent
+     * This is true by default, so it's possible to display the drawer under the statusBar
      *
-     * @param translucentStatusBarProgrammatically
-     * @return
+     * @param translucentStatusBarProgrammatically sets whether the statusBar should be transparent (and the drawer is displayed under it) or not
      */
     public DrawerBuilder withTranslucentStatusBarProgrammatically(boolean translucentStatusBarProgrammatically) {
         this.mTranslucentStatusBarProgrammatically = translucentStatusBarProgrammatically;
@@ -192,30 +189,40 @@ public class DrawerBuilder {
     protected Boolean mTranslucentStatusBarShadow = null;
 
     /**
-     * set this to true or false if you want activate or deactivate this
-     * set it to null if you want the default behavior (activated for lollipop and up)
+     * Sets if the MaterialDrawer should add the translucent shadow overlay under the statusBar to get the same effect as the toolbar with a colored statusBar
      *
-     * @param translucentStatusBarShadow
-     * @return
+     * @param translucentStatusBarShadow sets wheter the drawer should handle a shadow under the translucent statusBar or not
      */
     public DrawerBuilder withTranslucentStatusBarShadow(Boolean translucentStatusBarShadow) {
         this.mTranslucentStatusBarShadow = translucentStatusBarShadow;
         return this;
     }
 
+    //defines if we want a inner shadow (used in with the MiniDrawer)
+    private boolean mInnerShadow = false;
+
+    /**
+     * sets if the drawer should show an inner shadow or not
+     *
+     * @param innerShadow sets wheter the drawer should display an inner shadow or not
+     * @return
+     */
+    public DrawerBuilder withInnerShadow(boolean innerShadow) {
+        this.mInnerShadow = innerShadow;
+        return this;
+    }
 
     // the toolbar of the activity
     protected Toolbar mToolbar;
 
     /**
-     * Add the toolbar which is used in combination with this drawer.
-     * NOTE: if you use the drawer in a subActivity you don't need this, if you
-     * want to display the back arrow.
+     * Sets the toolbar which should be used in combination with the drawer
+     * This will handle the ActionBarDrawerToggle for you.
+     * Do not set this if you are in a sub activity and want to handle the back arrow on your own
      *
-     * @param toolbar
-     * @return
+     * @param toolbar the toolbar which is used in combination with the drawer
      */
-    public DrawerBuilder withToolbar(Toolbar toolbar) {
+    public DrawerBuilder withToolbar(@NonNull Toolbar toolbar) {
         this.mToolbar = toolbar;
         return this;
     }
@@ -280,6 +287,27 @@ public class DrawerBuilder {
         return this;
     }
 
+    // set to no systemUI visible mode
+    protected boolean mSystemUIHidden = false;
+
+    /**
+     * Set to true if you use your app in complete fullscreen mode
+     * with hidden statusBar and navigationBar
+     *
+     * @param systemUIHidden
+     * @return
+     */
+    public DrawerBuilder withSystemUIHidden(boolean systemUIHidden) {
+        this.mSystemUIHidden = systemUIHidden;
+
+        if (systemUIHidden) {
+            withFullscreen(systemUIHidden);
+        }
+
+        return this;
+    }
+
+
     // a custom view to be used instead of everything else
     protected View mCustomView;
 
@@ -290,7 +318,7 @@ public class DrawerBuilder {
      * @param customView
      * @return
      */
-    public DrawerBuilder withCustomView(View customView) {
+    public DrawerBuilder withCustomView(@NonNull View customView) {
         this.mCustomView = customView;
         return this;
     }
@@ -306,7 +334,7 @@ public class DrawerBuilder {
      * @param drawerLayout
      * @return
      */
-    public DrawerBuilder withDrawerLayout(DrawerLayout drawerLayout) {
+    public DrawerBuilder withDrawerLayout(@NonNull DrawerLayout drawerLayout) {
         this.mDrawerLayout = drawerLayout;
         return this;
     }
@@ -318,7 +346,7 @@ public class DrawerBuilder {
      * @param resLayout
      * @return
      */
-    public DrawerBuilder withDrawerLayout(int resLayout) {
+    public DrawerBuilder withDrawerLayout(@LayoutRes int resLayout) {
         if (mActivity == null) {
             throw new RuntimeException("please pass an activity first to use this call");
         }
@@ -342,7 +370,7 @@ public class DrawerBuilder {
      * @param statusBarColor
      * @return
      */
-    public DrawerBuilder withStatusBarColor(int statusBarColor) {
+    public DrawerBuilder withStatusBarColor(@ColorInt int statusBarColor) {
         this.mStatusBarColor = statusBarColor;
         return this;
     }
@@ -353,7 +381,7 @@ public class DrawerBuilder {
      * @param statusBarColorRes
      * @return
      */
-    public DrawerBuilder withStatusBarColorRes(int statusBarColorRes) {
+    public DrawerBuilder withStatusBarColorRes(@ColorRes int statusBarColorRes) {
         this.mStatusBarColorRes = statusBarColorRes;
         return this;
     }
@@ -371,7 +399,7 @@ public class DrawerBuilder {
      * @param sliderBackgroundColor
      * @return
      */
-    public DrawerBuilder withSliderBackgroundColor(int sliderBackgroundColor) {
+    public DrawerBuilder withSliderBackgroundColor(@ColorInt int sliderBackgroundColor) {
         this.mSliderBackgroundColor = sliderBackgroundColor;
         return this;
     }
@@ -383,7 +411,7 @@ public class DrawerBuilder {
      * @param sliderBackgroundColorRes
      * @return
      */
-    public DrawerBuilder withSliderBackgroundColorRes(int sliderBackgroundColorRes) {
+    public DrawerBuilder withSliderBackgroundColorRes(@ColorRes int sliderBackgroundColorRes) {
         this.mSliderBackgroundColorRes = sliderBackgroundColorRes;
         return this;
     }
@@ -396,7 +424,7 @@ public class DrawerBuilder {
      * @param sliderBackgroundDrawable
      * @return
      */
-    public DrawerBuilder withSliderBackgroundDrawable(Drawable sliderBackgroundDrawable) {
+    public DrawerBuilder withSliderBackgroundDrawable(@NonNull Drawable sliderBackgroundDrawable) {
         this.mSliderBackgroundDrawable = sliderBackgroundDrawable;
         return this;
     }
@@ -409,7 +437,7 @@ public class DrawerBuilder {
      * @param sliderBackgroundDrawableRes
      * @return
      */
-    public DrawerBuilder withSliderBackgroundDrawableRes(int sliderBackgroundDrawableRes) {
+    public DrawerBuilder withSliderBackgroundDrawableRes(@DrawableRes int sliderBackgroundDrawableRes) {
         this.mSliderBackgroundDrawableRes = sliderBackgroundDrawableRes;
         return this;
     }
@@ -449,7 +477,7 @@ public class DrawerBuilder {
      * @param drawerWidthRes
      * @return
      */
-    public DrawerBuilder withDrawerWidthRes(int drawerWidthRes) {
+    public DrawerBuilder withDrawerWidthRes(@DimenRes int drawerWidthRes) {
         if (mActivity == null) {
             throw new RuntimeException("please pass an activity first to use this call");
         }
@@ -483,7 +511,7 @@ public class DrawerBuilder {
      * @param accountHeader
      * @return
      */
-    public DrawerBuilder withAccountHeader(AccountHeader accountHeader) {
+    public DrawerBuilder withAccountHeader(@NonNull AccountHeader accountHeader) {
         return withAccountHeader(accountHeader, false);
     }
 
@@ -495,14 +523,9 @@ public class DrawerBuilder {
      * @param accountHeaderSticky
      * @return
      */
-    public DrawerBuilder withAccountHeader(AccountHeader accountHeader, boolean accountHeaderSticky) {
+    public DrawerBuilder withAccountHeader(@NonNull AccountHeader accountHeader, boolean accountHeaderSticky) {
         this.mAccountHeader = accountHeader;
         this.mAccountHeaderSticky = accountHeaderSticky;
-
-        //set the header offset
-        if (!accountHeaderSticky) {
-            mHeaderOffset = 1;
-        }
         return this;
     }
 
@@ -546,16 +569,31 @@ public class DrawerBuilder {
      * @param actionBarDrawerToggle
      * @return
      */
-    public DrawerBuilder withActionBarDrawerToggle(ActionBarDrawerToggle actionBarDrawerToggle) {
+    public DrawerBuilder withActionBarDrawerToggle(@NonNull ActionBarDrawerToggle actionBarDrawerToggle) {
         this.mActionBarDrawerToggleEnabled = true;
         this.mActionBarDrawerToggle = actionBarDrawerToggle;
         return this;
     }
 
+    // defines if the drawer should scroll to top after click
+    protected boolean mScrollToTopAfterClick = false;
+
+    /**
+     * defines if the drawer should scroll to top after click
+     *
+     * @param scrollToTopAfterClick
+     * @return
+     */
+    public DrawerBuilder withScrollToTopAfterClick(boolean scrollToTopAfterClick) {
+        this.mScrollToTopAfterClick = scrollToTopAfterClick;
+        return this;
+    }
+
+
     // header view
     protected View mHeaderView;
-    protected int mHeaderOffset = 0;
     protected boolean mHeaderDivider = true;
+    protected boolean mHeaderPadding = true;
     protected boolean mHeaderClickable = false;
 
     /**
@@ -564,10 +602,8 @@ public class DrawerBuilder {
      * @param headerView
      * @return
      */
-    public DrawerBuilder withHeader(View headerView) {
+    public DrawerBuilder withHeader(@NonNull View headerView) {
         this.mHeaderView = headerView;
-        //set the header offset
-        mHeaderOffset = 1;
         return this;
     }
 
@@ -577,7 +613,7 @@ public class DrawerBuilder {
      * @param headerViewRes
      * @return
      */
-    public DrawerBuilder withHeader(int headerViewRes) {
+    public DrawerBuilder withHeader(@LayoutRes int headerViewRes) {
         if (mActivity == null) {
             throw new RuntimeException("please pass an activity first to use this call");
         }
@@ -585,8 +621,6 @@ public class DrawerBuilder {
         if (headerViewRes != -1) {
             //i know there should be a root, bit i got none here
             this.mHeaderView = mActivity.getLayoutInflater().inflate(headerViewRes, null, false);
-            //set the headerOffset :D
-            mHeaderOffset = 1;
         }
 
         return this;
@@ -614,6 +648,17 @@ public class DrawerBuilder {
         return this;
     }
 
+    /**
+     * Set this to false if you don't need the padding below the header
+     *
+     * @param headerPadding
+     * @return
+     */
+    public DrawerBuilder withHeaderPadding(boolean headerPadding) {
+        this.mHeaderPadding = headerPadding;
+        return this;
+    }
+
     // sticky view
     protected View mStickyHeaderView;
 
@@ -623,7 +668,7 @@ public class DrawerBuilder {
      * @param stickyHeader
      * @return
      */
-    public DrawerBuilder withStickyHeader(View stickyHeader) {
+    public DrawerBuilder withStickyHeader(@NonNull View stickyHeader) {
         this.mStickyHeaderView = stickyHeader;
         return this;
     }
@@ -634,7 +679,7 @@ public class DrawerBuilder {
      * @param stickyHeaderRes
      * @return
      */
-    public DrawerBuilder withStickyHeader(int stickyHeaderRes) {
+    public DrawerBuilder withStickyHeader(@LayoutRes int stickyHeaderRes) {
         if (mActivity == null) {
             throw new RuntimeException("please pass an activity first to use this call");
         }
@@ -658,7 +703,7 @@ public class DrawerBuilder {
      * @param footerView
      * @return
      */
-    public DrawerBuilder withFooter(View footerView) {
+    public DrawerBuilder withFooter(@NonNull View footerView) {
         this.mFooterView = footerView;
         return this;
     }
@@ -669,7 +714,7 @@ public class DrawerBuilder {
      * @param footerViewRes
      * @return
      */
-    public DrawerBuilder withFooter(int footerViewRes) {
+    public DrawerBuilder withFooter(@LayoutRes int footerViewRes) {
         if (mActivity == null) {
             throw new RuntimeException("please pass an activity first to use this call");
         }
@@ -706,7 +751,12 @@ public class DrawerBuilder {
 
     // sticky view
     protected ViewGroup mStickyFooterView;
-    protected Boolean mStickyFooterDivider = null;
+    // divider shown on top of the sticky footer
+    protected boolean mStickyFooterDivider = false;
+    // sticky view
+    protected View mStickyFooterShadowView;
+    // shadow shown on the top of the sticky footer
+    protected boolean mStickyFooterShadow = true;
 
     /**
      * Add a sticky footer below the DrawerBuilder ListView. This can be any view
@@ -714,7 +764,7 @@ public class DrawerBuilder {
      * @param stickyFooter
      * @return
      */
-    public DrawerBuilder withStickyFooter(ViewGroup stickyFooter) {
+    public DrawerBuilder withStickyFooter(@NonNull ViewGroup stickyFooter) {
         this.mStickyFooterView = stickyFooter;
         return this;
     }
@@ -725,7 +775,7 @@ public class DrawerBuilder {
      * @param stickyFooterRes
      * @return
      */
-    public DrawerBuilder withStickyFooter(int stickyFooterRes) {
+    public DrawerBuilder withStickyFooter(@LayoutRes int stickyFooterRes) {
         if (mActivity == null) {
             throw new RuntimeException("please pass an activity first to use this call");
         }
@@ -739,13 +789,24 @@ public class DrawerBuilder {
     }
 
     /**
-     * Set this to false if you don't need the divider above the sticky footer
+     * Set this to true if you want the divider above the sticky footer
      *
      * @param stickyFooterDivider
      * @return
      */
-    public DrawerBuilder withStickyFooterDivider(Boolean stickyFooterDivider) {
+    public DrawerBuilder withStickyFooterDivider(boolean stickyFooterDivider) {
         this.mStickyFooterDivider = stickyFooterDivider;
+        return this;
+    }
+
+    /**
+     * Set this to false if you don't want the shadow on top of the sticky footer
+     *
+     * @param stickyFooterShadow
+     * @return
+     */
+    public DrawerBuilder withStickyFooterShadow(boolean stickyFooterShadow) {
+        this.mStickyFooterShadow = stickyFooterShadow;
         return this;
     }
 
@@ -764,31 +825,61 @@ public class DrawerBuilder {
     }
 
     // item to select
-    protected int mSelectedItem = 0;
+    protected int mSelectedItemPosition = 0;
 
     /**
      * Set this to the index of the item, you would love to select upon start
      *
-     * @param selectedItem
+     * @param selectedItemPosition
      * @return
      */
-    public DrawerBuilder withSelectedItem(int selectedItem) {
-        this.mSelectedItem = selectedItem;
+    public DrawerBuilder withSelectedItemByPosition(int selectedItemPosition) {
+        this.mSelectedItemPosition = selectedItemPosition;
         return this;
     }
 
-    // an ListView to use within the drawer :D
-    protected ListView mListView;
+    // item to select
+    protected int mSelectedItemIdentifier = 0;
 
     /**
-     * Define a custom ListView which will be used in the drawer
-     * NOTE: this is not recommended
+     * Set this to the identifier of the item, you would love to select upon start
      *
-     * @param listView
+     * @param selectedItemIdentifier
      * @return
      */
-    public DrawerBuilder withListView(ListView listView) {
-        this.mListView = listView;
+    public DrawerBuilder withSelectedItem(int selectedItemIdentifier) {
+        this.mSelectedItemIdentifier = selectedItemIdentifier;
+        return this;
+    }
+
+    // an RecyclerView to use within the drawer :D
+    protected RecyclerView mRecyclerView;
+
+    /**
+     * Define a custom RecyclerView which will be used in the drawer
+     * NOTE: this is not recommended
+     *
+     * @param recyclerView
+     * @return
+     */
+    public DrawerBuilder withRecyclerView(@NonNull RecyclerView recyclerView) {
+        this.mRecyclerView = recyclerView;
+        return this;
+    }
+
+    // if the adapter should enable hasStableIds to improve performance and allow animations
+    protected boolean mHasStableIds = false;
+
+    /**
+     * define this if you want enable hasStableIds for the adapter which is generated.
+     * WARNING: only use this if you have set an identifer for all of your items else this could cause
+     * many weird things
+     *
+     * @param hasStableIds
+     * @return
+     */
+    public DrawerBuilder withHasStableIds(boolean hasStableIds) {
+        this.mHasStableIds = hasStableIds;
         return this;
     }
 
@@ -802,27 +893,58 @@ public class DrawerBuilder {
      * @param adapter
      * @return
      */
-    public DrawerBuilder withAdapter(BaseDrawerAdapter adapter) {
+    public DrawerBuilder withAdapter(@NonNull BaseDrawerAdapter adapter) {
+        if (mAdapter != null) {
+            throw new RuntimeException("the adapter was already set or items were added to it. A header is also a RecyclerItem");
+        }
         this.mAdapter = adapter;
         return this;
     }
 
-    // animate the drawerItems
-    protected boolean mAnimateDrawerItems = false;
-
     /**
-     * define if the items should be animated on their first view / and when switching the drawer
+     * get the adapter (null safe)
      *
-     * @param animateDrawerItems
      * @return
      */
-    public DrawerBuilder withAnimateDrawerItems(boolean animateDrawerItems) {
-        this.mAnimateDrawerItems = animateDrawerItems;
+    protected BaseDrawerAdapter getAdapter() {
+        if (mAdapter == null) {
+            mAdapter = new DrawerAdapter();
+            mAdapter.setHasStableIds(mHasStableIds);
+        }
+        return mAdapter;
+    }
+
+    // Defines a Adapter which wraps the main Adapter used in the RecyclerView to allow extended navigation and other stuff
+    protected RecyclerView.Adapter mAdapterWrapper;
+
+    /**
+     * Defines a Adapter which wraps the main Adapter used in the RecyclerView to allow extended navigation and other stuff
+     *
+     * @param adapterWrapper
+     * @return
+     */
+    public DrawerBuilder withAdapterWrapper(@NonNull RecyclerView.Adapter adapterWrapper) {
+        if (mAdapter == null) {
+            throw new RuntimeException("this adapter has to be set in conjunction to a normal adapter which is used inside this wrapper adapter");
+        }
+        this.mAdapterWrapper = adapterWrapper;
         return this;
     }
 
-    // list in drawer
-    protected ArrayList<IDrawerItem> mDrawerItems = new ArrayList<>();
+
+    //defines the itemAnimator to be used in conjunction with the RecyclerView
+    protected RecyclerView.ItemAnimator mItemAnimator = null;
+
+    /**
+     * defines the itemAnimator to be used in conjunction with the RecyclerView
+     *
+     * @param itemAnimator
+     * @return
+     */
+    public DrawerBuilder withItemAnimator(@NonNull RecyclerView.ItemAnimator itemAnimator) {
+        mItemAnimator = itemAnimator;
+        return this;
+    }
 
     /**
      * Set the initial List of IDrawerItems for the Drawer
@@ -830,8 +952,8 @@ public class DrawerBuilder {
      * @param drawerItems
      * @return
      */
-    public DrawerBuilder withDrawerItems(ArrayList<IDrawerItem> drawerItems) {
-        this.mDrawerItems = drawerItems;
+    public DrawerBuilder withDrawerItems(@NonNull ArrayList<IDrawerItem> drawerItems) {
+        this.getAdapter().setDrawerItems(IdDistributor.checkIds(drawerItems));
         return this;
     }
 
@@ -841,14 +963,8 @@ public class DrawerBuilder {
      * @param drawerItems
      * @return
      */
-    public DrawerBuilder addDrawerItems(IDrawerItem... drawerItems) {
-        if (this.mDrawerItems == null) {
-            this.mDrawerItems = new ArrayList<>();
-        }
-
-        if (drawerItems != null) {
-            Collections.addAll(this.mDrawerItems, drawerItems);
-        }
+    public DrawerBuilder addDrawerItems(@NonNull IDrawerItem... drawerItems) {
+        this.getAdapter().addDrawerItems(IdDistributor.checkIds(drawerItems));
         return this;
     }
 
@@ -861,8 +977,8 @@ public class DrawerBuilder {
      * @param stickyDrawerItems
      * @return
      */
-    public DrawerBuilder withStickyDrawerItems(ArrayList<IDrawerItem> stickyDrawerItems) {
-        this.mStickyDrawerItems = stickyDrawerItems;
+    public DrawerBuilder withStickyDrawerItems(@NonNull ArrayList<IDrawerItem> stickyDrawerItems) {
+        this.mStickyDrawerItems = IdDistributor.checkIds(stickyDrawerItems);
         return this;
     }
 
@@ -872,15 +988,74 @@ public class DrawerBuilder {
      * @param stickyDrawerItems
      * @return
      */
-    public DrawerBuilder addStickyDrawerItems(IDrawerItem... stickyDrawerItems) {
+    public DrawerBuilder addStickyDrawerItems(@NonNull IDrawerItem... stickyDrawerItems) {
         if (this.mStickyDrawerItems == null) {
             this.mStickyDrawerItems = new ArrayList<>();
         }
 
-        if (stickyDrawerItems != null) {
-            Collections.addAll(this.mStickyDrawerItems, stickyDrawerItems);
-        }
+        Collections.addAll(this.mStickyDrawerItems, IdDistributor.checkIds(stickyDrawerItems));
+
         return this;
+    }
+
+    /**
+     * Inflates the DrawerItems from a menu.xml
+     *
+     * @param menuRes
+     * @return
+     */
+    public DrawerBuilder inflateMenu(@MenuRes int menuRes) {
+        MenuInflater menuInflater = new SupportMenuInflater(mActivity);
+        MenuBuilder mMenu = new MenuBuilder(mActivity);
+
+        menuInflater.inflate(menuRes, mMenu);
+
+        addMenuItems(mMenu, false);
+
+        return this;
+    }
+
+    /**
+     * helper method to init the drawerItems from a menu
+     *
+     * @param mMenu
+     * @param subMenu
+     */
+    private void addMenuItems(Menu mMenu, boolean subMenu) {
+        int groupId = R.id.material_drawer_menu_default_group;
+        for (int i = 0; i < mMenu.size(); i++) {
+            MenuItem mMenuItem = mMenu.getItem(i);
+            IDrawerItem iDrawerItem;
+            if (!subMenu && mMenuItem.getGroupId() != groupId && mMenuItem.getGroupId() != 0) {
+                groupId = mMenuItem.getGroupId();
+                iDrawerItem = new DividerDrawerItem();
+                getAdapter().addDrawerItems(iDrawerItem);
+            }
+            if (mMenuItem.hasSubMenu()) {
+                iDrawerItem = new PrimaryDrawerItem()
+                        .withName(mMenuItem.getTitle().toString())
+                        .withIcon(mMenuItem.getIcon())
+                        .withIdentifier(mMenuItem.getItemId())
+                        .withEnabled(mMenuItem.isEnabled())
+                        .withSelectable(false);
+                getAdapter().addDrawerItems(iDrawerItem);
+                addMenuItems(mMenuItem.getSubMenu(), true);
+            } else if (mMenuItem.getGroupId() != 0 || subMenu) {
+                iDrawerItem = new SecondaryDrawerItem()
+                        .withName(mMenuItem.getTitle().toString())
+                        .withIcon(mMenuItem.getIcon())
+                        .withIdentifier(mMenuItem.getItemId())
+                        .withEnabled(mMenuItem.isEnabled());
+                getAdapter().addDrawerItems(iDrawerItem);
+            } else {
+                iDrawerItem = new PrimaryDrawerItem()
+                        .withName(mMenuItem.getTitle().toString())
+                        .withIcon(mMenuItem.getIcon())
+                        .withIdentifier(mMenuItem.getItemId())
+                        .withEnabled(mMenuItem.isEnabled());
+                getAdapter().addDrawerItems(iDrawerItem);
+            }
+        }
     }
 
     // close drawer on click
@@ -898,7 +1073,7 @@ public class DrawerBuilder {
     }
 
     // delay drawer close to prevent lag
-    protected int mDelayOnDrawerClose = 150;
+    protected int mDelayOnDrawerClose = 50;
 
     /**
      * Define the delay for the drawer close operation after a click.
@@ -924,7 +1099,7 @@ public class DrawerBuilder {
      * @param onDrawerListener
      * @return this
      */
-    public DrawerBuilder withOnDrawerListener(Drawer.OnDrawerListener onDrawerListener) {
+    public DrawerBuilder withOnDrawerListener(@NonNull Drawer.OnDrawerListener onDrawerListener) {
         this.mOnDrawerListener = onDrawerListener;
         return this;
     }
@@ -938,7 +1113,7 @@ public class DrawerBuilder {
      * @param onDrawerItemClickListener
      * @return
      */
-    public DrawerBuilder withOnDrawerItemClickListener(Drawer.OnDrawerItemClickListener onDrawerItemClickListener) {
+    public DrawerBuilder withOnDrawerItemClickListener(@NonNull Drawer.OnDrawerItemClickListener onDrawerItemClickListener) {
         this.mOnDrawerItemClickListener = onDrawerItemClickListener;
         return this;
     }
@@ -952,22 +1127,8 @@ public class DrawerBuilder {
      * @param onDrawerItemLongClickListener
      * @return
      */
-    public DrawerBuilder withOnDrawerItemLongClickListener(Drawer.OnDrawerItemLongClickListener onDrawerItemLongClickListener) {
+    public DrawerBuilder withOnDrawerItemLongClickListener(@NonNull Drawer.OnDrawerItemLongClickListener onDrawerItemLongClickListener) {
         this.mOnDrawerItemLongClickListener = onDrawerItemLongClickListener;
-        return this;
-    }
-
-    // onDrawerItemClickListeners
-    protected Drawer.OnDrawerItemSelectedListener mOnDrawerItemSelectedListener;
-
-    /**
-     * Define a OnDrawerItemSelectedListener for this Drawer
-     *
-     * @param onDrawerItemSelectedListener
-     * @return
-     */
-    public DrawerBuilder withOnDrawerItemSelectedListener(Drawer.OnDrawerItemSelectedListener onDrawerItemSelectedListener) {
-        this.mOnDrawerItemSelectedListener = onDrawerItemSelectedListener;
         return this;
     }
 
@@ -980,7 +1141,7 @@ public class DrawerBuilder {
      * @param onDrawerNavigationListener
      * @return this
      */
-    public DrawerBuilder withOnDrawerNavigationListener(Drawer.OnDrawerNavigationListener onDrawerNavigationListener) {
+    public DrawerBuilder withOnDrawerNavigationListener(@NonNull Drawer.OnDrawerNavigationListener onDrawerNavigationListener) {
         this.mOnDrawerNavigationListener = onDrawerNavigationListener;
         return this;
     }
@@ -1055,72 +1216,69 @@ public class DrawerBuilder {
             withDrawerLayout(-1);
         }
 
-        //check if the activity was initialized correctly
-        if (mRootView == null || mRootView.getChildCount() == 0) {
-            throw new RuntimeException("You have to set your layout for this activity with setContentView() first. Or you build the drawer on your own with .buildView()");
+        //some new Materialize magic ;)
+        mMaterialize = new MaterializeBuilder()
+                .withActivity(mActivity)
+                .withRootView(mRootView)
+                .withFullscreen(mFullscreen)
+                .withSystemUIHidden(mSystemUIHidden)
+                .withTranslucentStatusBar(mTranslucentStatusBar)
+                .withTranslucentStatusBarProgrammatically(mTranslucentStatusBarProgrammatically)
+                .withTranslucentNavigationBar(mTranslucentNavigationBar)
+                .withTranslucentNavigationBarProgrammatically(mTranslucentNavigationBarProgrammatically)
+                .withContainer(mDrawerLayout)
+                .withStatusBarColor(mStatusBarColor)
+                .withStatusBarColorRes(mStatusBarColorRes)
+                .build();
+
+        //handle the navigation stuff of the ActionBarDrawerToggle and the drawer in general
+        handleDrawerNavigation(mActivity, false);
+
+        //build the view which will be set to the drawer
+        Drawer result = buildView();
+
+        //define id for the sliderLayout
+        mSliderLayout.setId(R.id.material_drawer_slider_layout);
+        // add the slider to the drawer
+        mDrawerLayout.addView(mSliderLayout, 1);
+
+        return result;
+    }
+
+    /**
+     * Build and add the DrawerBuilder to your activity
+     *
+     * @return
+     */
+    public Drawer buildForFragment() {
+        if (mUsed) {
+            throw new RuntimeException("you must not reuse a DrawerBuilder builder");
+        }
+        if (mActivity == null) {
+            throw new RuntimeException("please pass an activity");
+        }
+        if (mRootView == null) {
+            throw new RuntimeException("please pass the view which should host the DrawerLayout");
         }
 
-        //get the content view
-        View contentView = mRootView.getChildAt(0);
-        boolean alreadyInflated = contentView instanceof DrawerLayout;
+        //set that this builder was used. now you have to create a new one
+        mUsed = true;
 
-        //get the drawer root
-        mDrawerContentRoot = (ScrimInsetsFrameLayout) mDrawerLayout.getChildAt(0);
-
-        //do some magic specific to the statusBar
-        if (!alreadyInflated && mTranslucentStatusBar) {
-            if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
-                DrawerUtils.setTranslucentStatusFlag(mActivity, true);
-            }
-            if (Build.VERSION.SDK_INT >= 19) {
-                if (mTranslucentStatusBarProgrammatically) {
-                    mActivity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-                }
-            }
-            if (Build.VERSION.SDK_INT >= 21) {
-                DrawerUtils.setTranslucentStatusFlag(mActivity, false);
-                if (mTranslucentStatusBarProgrammatically) {
-                    mActivity.getWindow().setStatusBarColor(Color.TRANSPARENT);
-                }
-            }
-            mDrawerContentRoot.setPadding(0, UIUtils.getStatusBarHeight(mActivity), 0, 0);
-
-            // define the statusBarColor
-            if (mStatusBarColor == 0 && mStatusBarColorRes != -1) {
-                mStatusBarColor = mActivity.getResources().getColor(mStatusBarColorRes);
-            } else if (mStatusBarColor == 0) {
-                mStatusBarColor = UIUtils.getThemeColorFromAttrOrRes(mActivity, R.attr.colorPrimaryDark, R.color.material_drawer_primary_dark);
-            }
-            mDrawerContentRoot.setInsetForeground(mStatusBarColor);
+        // if the user has not set a drawerLayout use the default one :D
+        if (mDrawerLayout == null) {
+            withDrawerLayout(-1);
         }
 
-        //do some magic specific to the navigationBar
-        if (!alreadyInflated && mTranslucentNavigationBar) {
-            if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
-                DrawerUtils.setTranslucentNavigationFlag(mActivity, true);
-            }
-            if (Build.VERSION.SDK_INT >= 19) {
-                if (mTranslucentNavigationBarProgrammatically) {
-                    mActivity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-                    DrawerUtils.setTranslucentNavigationFlag(mActivity, true);
-                }
-            }
-            if (Build.VERSION.SDK_INT >= 21) {
-                if (mTranslucentNavigationBarProgrammatically) {
-                    mActivity.getWindow().setNavigationBarColor(Color.TRANSPARENT);
-                }
-            }
-        }
+        //set the drawer here...
 
-        //if we are fullscreen disable the ScrimInsetsLayout
-        if (mFullscreen && Build.VERSION.SDK_INT >= 19) {
-            mDrawerContentRoot.setEnabled(false);
-        }
+        View originalContentView = mRootView.getChildAt(0);
+
+        boolean alreadyInflated = originalContentView.getId() == R.id.materialize_root;
 
         //only add the new layout if it wasn't done before
         if (!alreadyInflated) {
             // remove the contentView
-            mRootView.removeView(contentView);
+            mRootView.removeView(originalContentView);
         } else {
             //if it was already inflated we have to clean up again
             mRootView.removeAllViews();
@@ -1132,20 +1290,33 @@ public class DrawerBuilder {
                 ViewGroup.LayoutParams.MATCH_PARENT
         );
 
-        //if we have a translucent navigation bar set the bottom margin
-        if (mTranslucentNavigationBar && Build.VERSION.SDK_INT >= 19) {
-            layoutParamsContentView.bottomMargin = UIUtils.getNavigationBarHeight(mActivity);
-        }
+        //add the drawer
+        mRootView.addView(mDrawerLayout, layoutParamsContentView);
 
-        //add the contentView to the drawer content frameLayout
-        mDrawerContentRoot.addView(contentView, layoutParamsContentView);
+        //set the id so we can check if it was already inflated
+        mDrawerLayout.setId(R.id.materialize_root);
 
-        //add the drawerLayout to the root
-        mRootView.addView(mDrawerLayout, new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-        ));
+        //handle the navigation stuff of the ActionBarDrawerToggle and the drawer in general
+        handleDrawerNavigation(mActivity, false);
 
+        //build the view which will be set to the drawer
+        Drawer result = buildView();
+
+        // add the slider to the drawer
+        mDrawerLayout.addView(originalContentView, 0);
+
+        //define id for the sliderLayout
+        mSliderLayout.setId(R.id.material_drawer_slider_layout);
+        // add the slider to the drawer
+        mDrawerLayout.addView(mSliderLayout, 1);
+
+        return result;
+    }
+
+    /**
+     * handles the different logics for the Drawer Navigation Listeners / Indications (ActionBarDrawertoggle)
+     */
+    protected void handleDrawerNavigation(Activity activity, boolean recreateActionBarDrawerToggle) {
         //set the navigationOnClickListener
         final View.OnClickListener toolbarNavigationListener = new View.OnClickListener() {
             @Override
@@ -1165,9 +1336,13 @@ public class DrawerBuilder {
             }
         };
 
+        if (recreateActionBarDrawerToggle) {
+            mActionBarDrawerToggle = null;
+        }
+
         // create the ActionBarDrawerToggle if not set and enabled and if we have a toolbar
         if (mActionBarDrawerToggleEnabled && mActionBarDrawerToggle == null && mToolbar != null) {
-            this.mActionBarDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close) {
+            this.mActionBarDrawerToggle = new ActionBarDrawerToggle(activity, mDrawerLayout, mToolbar, R.string.material_drawer_open, R.string.material_drawer_close) {
                 @Override
                 public void onDrawerOpened(View drawerView) {
                     if (mOnDrawerListener != null) {
@@ -1239,14 +1414,6 @@ public class DrawerBuilder {
                 }
             });
         }
-
-        //build the view which will be set to the drawer
-        Drawer result = buildView();
-
-        // add the slider to the drawer
-        mDrawerLayout.addView(mSliderLayout, 1);
-
-        return result;
     }
 
     /**
@@ -1269,22 +1436,6 @@ public class DrawerBuilder {
             mSliderLayout.setLayoutParams(params);
         }
 
-        // set the background
-        if (mSliderBackgroundColor != 0) {
-            mSliderLayout.setBackgroundColor(mSliderBackgroundColor);
-        } else if (mSliderBackgroundColorRes != -1) {
-            mSliderLayout.setBackgroundColor(mActivity.getResources().getColor(mSliderBackgroundColorRes));
-        } else if (mSliderBackgroundDrawable != null) {
-            UIUtils.setBackground(mSliderLayout, mSliderBackgroundDrawable);
-        } else if (mSliderBackgroundDrawableRes != -1) {
-            UIUtils.setBackground(mSliderLayout, mSliderBackgroundColorRes);
-        }
-
-        //set the shadow for the drawer
-        if (Build.VERSION.SDK_INT < 21) {
-            mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, mDrawerGravity);
-        }
-
         //create the content
         createContent();
 
@@ -1293,6 +1444,11 @@ public class DrawerBuilder {
         //set the drawer for the accountHeader if set
         if (mAccountHeader != null) {
             mAccountHeader.setDrawer(result);
+        }
+
+        //toggle selection list if we were previously on the account list
+        if (mSavedInstance != null && mSavedInstance.getBoolean(Drawer.BUNDLE_DRAWER_CONTENT_SWITCHED, false)) {
+            mAccountHeader.toggleSelectionList(mActivity);
         }
 
         //handle if the drawer should be shown on first launch
@@ -1310,7 +1466,7 @@ public class DrawerBuilder {
      * @param result the Drawer.Result of an existing Drawer
      * @return
      */
-    public Drawer append(Drawer result) {
+    public Drawer append(@NonNull Drawer result) {
         if (mUsed) {
             throw new RuntimeException("you must not reuse a DrawerBuilder builder");
         }
@@ -1320,6 +1476,7 @@ public class DrawerBuilder {
 
         //set that this builder was used. now you have to create a new one
         mUsed = true;
+        mAppended = true;
 
         //get the drawer layout from the previous drawer
         mDrawerLayout = result.getDrawerLayout();
@@ -1335,16 +1492,26 @@ public class DrawerBuilder {
         params = DrawerUtils.processDrawerLayoutParams(this, params);
         // set the new params
         mSliderLayout.setLayoutParams(params);
+        //define id for the sliderLayout
+        mSliderLayout.setId(R.id.material_drawer_slider_layout);
         // add the slider to the drawer
         mDrawerLayout.addView(mSliderLayout, 1);
 
         //create the content
         createContent();
 
+        //create the result object
+        Drawer appendedResult = new Drawer(this);
+
+        //toggle selection list if we were previously on the account list
+        if (mSavedInstance != null && mSavedInstance.getBoolean(Drawer.BUNDLE_DRAWER_CONTENT_SWITCHED_APPENDED, false)) {
+            mAccountHeader.toggleSelectionList(mActivity);
+        }
+
         //forget the reference to the activity
         mActivity = null;
 
-        return new Drawer(this);
+        return appendedResult;
     }
 
     /**
@@ -1362,32 +1529,43 @@ public class DrawerBuilder {
             return;
         }
 
-        // if we have an adapter (either by defining a custom one or the included one add a list :D
-        if (mListView == null) {
-            mListView = new ListView(mActivity);
-            mListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-            mListView.setDivider(null);
-            //some style improvements on older devices
-            mListView.setFadingEdgeLength(0);
-            mListView.setCacheColorHint(Color.TRANSPARENT);
-            //set the drawing cache background to the same color as the slider to improve performance
-            mListView.setDrawingCacheBackgroundColor(UIUtils.getThemeColorFromAttrOrRes(mActivity, R.attr.material_drawer_background, R.color.material_drawer_background));
-            //only draw the selector on top if we are on a newer api than 21 because this makes only sense for ripples
-            if (Build.VERSION.SDK_INT > 21) {
-                mListView.setDrawSelectorOnTop(true);
+        //set the shadow for the drawer
+        if (Build.VERSION.SDK_INT < 21 && mDrawerLayout != null) {
+            if (mDrawerGravity == GravityCompat.START) {
+                mDrawerLayout.setDrawerShadow(R.drawable.material_drawer_shadow_right, mDrawerGravity);
+            } else {
+                mDrawerLayout.setDrawerShadow(R.drawable.material_drawer_shadow_left, mDrawerGravity);
             }
-            mListView.setClipToPadding(false);
+        }
+
+        // if we have an adapter (either by defining a custom one or the included one add a list :D
+        if (mRecyclerView == null) {
+            mRecyclerView = (RecyclerView) LayoutInflater.from(mActivity).inflate(R.layout.material_drawer_recycler_view, mSliderLayout, false);
+            //set the itemAnimator
+            if (mItemAnimator == null) {
+                mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            } else {
+                mRecyclerView.setItemAnimator(mItemAnimator);
+            }
+            //some style improvements on older devices
+            mRecyclerView.setFadingEdgeLength(0);
+
+            //set the drawing cache background to the same color as the slider to improve performance
+            //mRecyclerView.setDrawingCacheBackgroundColor(UIUtils.getThemeColorFromAttrOrRes(mActivity, R.attr.material_drawer_background, R.color.material_drawer_background));
+            mRecyclerView.setClipToPadding(false);
+            //additional stuff
+            mRecyclerView.setLayoutManager(mLayoutManager);
 
             int paddingTop = 0;
-            if ((mTranslucentStatusBar && !mTranslucentActionBarCompatibility) || mFullscreen) {
+            if ((mTranslucentStatusBar || mFullscreen) && (mDisplayBelowStatusBar == null || !mDisplayBelowStatusBar) && !mSystemUIHidden) {
                 paddingTop = UIUtils.getStatusBarHeight(mActivity);
             }
             int paddingBottom = 0;
-            if ((mTranslucentNavigationBar || mFullscreen) && Build.VERSION.SDK_INT >= 19) {
+            if (((mTranslucentNavigationBar || mFullscreen) && Build.VERSION.SDK_INT >= 19) && !mSystemUIHidden) {
                 paddingBottom = UIUtils.getNavigationBarHeight(mActivity);
             }
 
-            mListView.setPadding(0, paddingTop, 0, paddingBottom);
+            mRecyclerView.setPadding(0, paddingTop, 0, paddingBottom);
         }
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -1395,19 +1573,41 @@ public class DrawerBuilder {
                 ViewGroup.LayoutParams.MATCH_PARENT
         );
         params.weight = 1f;
-        mSliderLayout.addView(mListView, params);
+        mSliderLayout.addView(mRecyclerView, params);
 
         //find the shadow view
-        View statusBarShadow = mSliderLayout.findViewById(R.id.shadow_top);
+        View statusBarShadow = mSliderLayout.findViewById(R.id.material_drawer_shadow_top);
         RelativeLayout.LayoutParams shadowLayoutParams = (RelativeLayout.LayoutParams) statusBarShadow.getLayoutParams();
         shadowLayoutParams.height = UIUtils.getStatusBarHeight(mActivity, true);
         statusBarShadow.setLayoutParams(shadowLayoutParams);
 
+        if (mInnerShadow) {
+            View innerShadow = mSliderLayout.findViewById(R.id.material_drawer_inner_shadow);
+            innerShadow.setVisibility(View.VISIBLE);
+            innerShadow.bringToFront();
+            if (mDrawerGravity == GravityCompat.START) {
+                innerShadow.setBackgroundResource(R.drawable.material_drawer_shadow_left);
+            } else {
+                innerShadow.setBackgroundResource(R.drawable.material_drawer_shadow_right);
+            }
+        }
+
+        // set the background
+        if (mSliderBackgroundColor != 0) {
+            mSliderLayout.setBackgroundColor(mSliderBackgroundColor);
+        } else if (mSliderBackgroundColorRes != -1) {
+            mSliderLayout.setBackgroundColor(ContextCompat.getColor(mActivity, mSliderBackgroundColorRes));
+        } else if (mSliderBackgroundDrawable != null) {
+            UIUtils.setBackground(mSliderLayout, mSliderBackgroundDrawable);
+        } else if (mSliderBackgroundDrawableRes != -1) {
+            UIUtils.setBackground(mSliderLayout, mSliderBackgroundColorRes);
+        }
+
         //some extra stuff to beautify the whole thing ;)
-        if ((mTranslucentStatusBar && !mTranslucentActionBarCompatibility) || (mTranslucentStatusBarShadow != null && mTranslucentStatusBarShadow)) {
+        if ((mTranslucentStatusBar || (mTranslucentStatusBarShadow != null && mTranslucentStatusBarShadow))) {
             if (mTranslucentStatusBarShadow == null) {
-                //if we use the default behavior show it only if we are above API Level 20
-                if (Build.VERSION.SDK_INT > 20) {
+                //if we use the default behavior show it only if we are >= API Level 21
+                if (Build.VERSION.SDK_INT >= 21) {
                     //bring shadow bar to front again
                     statusBarShadow.bringToFront();
                 } else {
@@ -1423,9 +1623,9 @@ public class DrawerBuilder {
             statusBarShadow.setVisibility(View.GONE);
         }
 
-        // initialize list if there is an adapter or set items
-        if (mDrawerItems != null && mAdapter == null) {
-            mAdapter = new DrawerAdapter(mActivity, mDrawerItems, mAnimateDrawerItems);
+        if (mDisplayBelowStatusBar != null && mDisplayBelowStatusBar) {
+            //disable the shadow if we are below the statusBar
+            statusBarShadow.setVisibility(View.GONE);
         }
 
         //handle the header
@@ -1441,32 +1641,36 @@ public class DrawerBuilder {
         });
 
         //after adding the header do the setAdapter and set the selection
-        if (mAdapter != null) {
-            //set the adapter on the listView
-            mListView.setAdapter(mAdapter);
 
-            //predefine selection (should be the first element
-            DrawerUtils.setListSelection(this, mSelectedItem, false);
+        //set the adapter on the listView
+        if (mAdapterWrapper == null) {
+            mRecyclerView.setAdapter(getAdapter());
+        } else {
+            mRecyclerView.setAdapter(mAdapterWrapper);
         }
 
-        // add the onDrawerItemClickListener if set
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                IDrawerItem i = getDrawerItem(position, true);
+        //predefine selection (should be the first element
+        if (mSelectedItemPosition == 0 && mSelectedItemIdentifier != 0) {
+            mSelectedItemPosition = DrawerUtils.getPositionByIdentifier(this, mSelectedItemIdentifier);
+        }
+        if (mHeaderView != null && mSelectedItemPosition == 0) {
+            mSelectedItemPosition = 1;
+        }
+        DrawerUtils.setRecyclerViewSelection(this, mSelectedItemPosition, false);
 
-                if (i != null && i instanceof Checkable && !((Checkable) i).isCheckable()) {
-                    mListView.setSelection(mCurrentSelection + mHeaderOffset);
-                    mListView.setItemChecked(mCurrentSelection + mHeaderOffset, true);
-                } else {
+        // add the onDrawerItemClickListener if set
+        mAdapter.setOnClickListener(new BaseDrawerAdapter.OnClickListener() {
+            @Override
+            public void onClick(View view, int position, IDrawerItem item) {
+                if (!(item != null && item instanceof Selectable && !((Selectable) item).isSelectable())) {
                     resetStickyFooterSelection();
-                    mCurrentSelection = position - mHeaderOffset;
-                    mCurrentFooterSelection = -1;
+                    mCurrentSelection = position;
+                    mCurrentStickyFooterSelection = -1;
                 }
 
                 boolean consumed = false;
                 if (mOnDrawerItemClickListener != null) {
-                    consumed = mOnDrawerItemClickListener.onItemClick(parent, view, position - mHeaderOffset, id, i);
+                    consumed = mOnDrawerItemClickListener.onItemClick(view, position, item);
                 }
 
                 if (!consumed) {
@@ -1477,49 +1681,34 @@ public class DrawerBuilder {
         });
 
         // add the onDrawerItemLongClickListener if set
-        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        mAdapter.setOnLongClickListener(new BaseDrawerAdapter.OnLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onLongClick(View view, int position, IDrawerItem item) {
                 if (mOnDrawerItemLongClickListener != null) {
-                    return mOnDrawerItemLongClickListener.onItemLongClick(parent, view, position - mHeaderOffset, id, getDrawerItem(position, true));
+                    return mOnDrawerItemLongClickListener.onItemLongClick(view, position, getDrawerItem(position));
                 }
                 return false;
             }
         });
 
-        // add the onDrawerItemSelectedListener if set
-        mListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (mOnDrawerItemSelectedListener != null) {
-                    mOnDrawerItemSelectedListener.onItemSelected(parent, view, position - mHeaderOffset, id, getDrawerItem(position, true));
-                }
-                mCurrentSelection = position - mHeaderOffset;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                if (mOnDrawerItemSelectedListener != null) {
-                    mOnDrawerItemSelectedListener.onNothingSelected(parent);
-                }
-            }
-        });
-
-        if (mListView != null) {
-            mListView.smoothScrollToPosition(0);
+        if (mRecyclerView != null) {
+            mRecyclerView.scrollToPosition(0);
         }
 
         // try to restore all saved values again
         if (mSavedInstance != null) {
-            int selection = mSavedInstance.getInt(Drawer.BUNDLE_SELECTION, -1);
-            DrawerUtils.setListSelection(this, selection, false);
-            int footerSelection = mSavedInstance.getInt(Drawer.BUNDLE_FOOTER_SELECTION, -1);
-            DrawerUtils.setFooterSelection(this, footerSelection, false);
+            if (!mAppended) {
+                DrawerUtils.setRecyclerViewSelection(this, mSavedInstance.getInt(Drawer.BUNDLE_SELECTION, -1), false);
+                DrawerUtils.setStickyFooterSelection(this, mSavedInstance.getInt(Drawer.BUNDLE_STICKY_FOOTER_SELECTION, -1), null);
+            } else {
+                DrawerUtils.setRecyclerViewSelection(this, mSavedInstance.getInt(Drawer.BUNDLE_SELECTION_APPENDED, -1), false);
+                DrawerUtils.setStickyFooterSelection(this, mSavedInstance.getInt(Drawer.BUNDLE_STICKY_FOOTER_SELECTION_APPENDED, -1), null);
+            }
         }
 
         // call initial onClick event to allow the dev to init the first view
         if (mFireInitialOnClick && mOnDrawerItemClickListener != null) {
-            mOnDrawerItemClickListener.onItemClick(null, null, mCurrentSelection, mCurrentSelection, getDrawerItem(mCurrentSelection, false));
+            mOnDrawerItemClickListener.onItemClick(null, mCurrentSelection, getDrawerItem(mCurrentSelection));
         }
     }
 
@@ -1533,6 +1722,10 @@ public class DrawerBuilder {
                     @Override
                     public void run() {
                         mDrawerLayout.closeDrawers();
+
+                        if (mScrollToTopAfterClick) {
+                            mRecyclerView.smoothScrollToPosition(0);
+                        }
                     }
                 }, mDelayOnDrawerClose);
             } else {
@@ -1547,17 +1740,8 @@ public class DrawerBuilder {
      * @param position
      * @return
      */
-    protected IDrawerItem getDrawerItem(int position, boolean includeOffset) {
-        if (includeOffset) {
-            if (mDrawerItems != null && mDrawerItems.size() > (position - mHeaderOffset) && (position - mHeaderOffset) > -1) {
-                return mDrawerItems.get(position - mHeaderOffset);
-            }
-        } else {
-            if (mDrawerItems != null && mDrawerItems.size() > position && position > -1) {
-                return mDrawerItems.get(position);
-            }
-        }
-        return null;
+    protected IDrawerItem getDrawerItem(int position) {
+        return getAdapter().getItem(position);
     }
 
     /**
@@ -1568,16 +1752,7 @@ public class DrawerBuilder {
      * @return
      */
     protected boolean checkDrawerItem(int position, boolean includeOffset) {
-        if (includeOffset) {
-            if (mDrawerItems != null && mDrawerItems.size() > (position - mHeaderOffset) && (position - mHeaderOffset) > -1) {
-                return true;
-            }
-        } else {
-            if (mDrawerItems != null && mDrawerItems.size() > position && position > -1) {
-                return true;
-            }
-        }
-        return false;
+        return getAdapter().getItem(position) != null;
     }
 
     /**
@@ -1585,11 +1760,11 @@ public class DrawerBuilder {
      */
     protected void resetStickyFooterSelection() {
         if (mStickyFooterView instanceof LinearLayout) {
-            for (int i = 0; i < ((LinearLayout) mStickyFooterView).getChildCount(); i++) {
+            for (int i = 0; i < (mStickyFooterView).getChildCount(); i++) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    ((LinearLayout) mStickyFooterView).getChildAt(i).setActivated(false);
+                    (mStickyFooterView).getChildAt(i).setActivated(false);
                 }
-                ((LinearLayout) mStickyFooterView).getChildAt(i).setSelected(false);
+                (mStickyFooterView).getChildAt(i).setSelected(false);
             }
         }
     }

@@ -9,9 +9,9 @@
     <RootNamespace>MaterialDrawer</RootNamespace>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
-    <AssemblyName>material-drawer-3.1.2</AssemblyName>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <AssemblyName>material-drawer</AssemblyName>
+    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <ReleaseVersion>3.1.2</ReleaseVersion>
@@ -50,6 +50,9 @@
     <Reference Include="android-iconics">
       <HintPath>..\solutions\packages\Mikepenz.Android.Iconics.Xamarin.Binding.2.5.1\lib\MonoAndroid\android-iconics.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.Android.Support.v7.RecyclerView">
+      <HintPath>..\solutions\packages\Xamarin.Android.Support.v7.RecyclerView.23.1.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v7.RecyclerView.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -69,6 +72,10 @@
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets" />
   <ItemGroup>
-    <LibraryProjectZip Include="Jars\materialdrawer-3.1.2.aar" />
+    <LibraryProjectZip Include="Jars\materialdrawer-4.5.8.aar" />
+    <LibraryProjectZip Include="Jars\materialize-0.5.1.aar" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="JavaSrc\" />
   </ItemGroup>
 </Project>

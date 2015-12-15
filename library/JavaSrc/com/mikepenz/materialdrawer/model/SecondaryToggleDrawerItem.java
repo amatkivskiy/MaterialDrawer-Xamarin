@@ -15,23 +15,23 @@ import com.mikepenz.materialdrawer.model.utils.ViewHolderFactory;
 /**
  * Created by mikepenz on 03.02.15.
  */
-public class ToggleDrawerItem extends BasePrimaryDrawerItem<ToggleDrawerItem> {
+public class SecondaryToggleDrawerItem extends BaseSecondaryDrawerItem<SecondaryToggleDrawerItem> {
     private boolean toggleEnabled = true;
 
     private boolean checked = false;
     private OnCheckedChangeListener onCheckedChangeListener = null;
 
-    public ToggleDrawerItem withChecked(boolean checked) {
+    public SecondaryToggleDrawerItem withChecked(boolean checked) {
         this.checked = checked;
         return this;
     }
 
-    public ToggleDrawerItem withToggleEnabled(boolean toggleEnabled) {
+    public SecondaryToggleDrawerItem withToggleEnabled(boolean toggleEnabled) {
         this.toggleEnabled = toggleEnabled;
         return this;
     }
 
-    public ToggleDrawerItem withOnCheckedChangeListener(OnCheckedChangeListener onCheckedChangeListener) {
+    public SecondaryToggleDrawerItem withOnCheckedChangeListener(OnCheckedChangeListener onCheckedChangeListener) {
         this.onCheckedChangeListener = onCheckedChangeListener;
         return this;
     }
@@ -62,13 +62,13 @@ public class ToggleDrawerItem extends BasePrimaryDrawerItem<ToggleDrawerItem> {
 
     @Override
     public String getType() {
-        return "TOGGLE_ITEM";
+        return "SECONDARY_TOGGLE_ITEM";
     }
 
     @Override
     @LayoutRes
     public int getLayoutRes() {
-        return R.layout.material_drawer_item_toggle;
+        return R.layout.material_drawer_item_secondary_toggle;
     }
 
     @Override
@@ -128,7 +128,7 @@ public class ToggleDrawerItem extends BasePrimaryDrawerItem<ToggleDrawerItem> {
             if (isEnabled()) {
                 checked = isChecked;
                 if (getOnCheckedChangeListener() != null) {
-                    getOnCheckedChangeListener().onCheckedChanged(ToggleDrawerItem.this, buttonView, isChecked);
+                    getOnCheckedChangeListener().onCheckedChanged(SecondaryToggleDrawerItem.this, buttonView, isChecked);
                 }
             } else {
                 buttonView.setOnCheckedChangeListener(null);
