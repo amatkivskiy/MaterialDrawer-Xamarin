@@ -42,13 +42,13 @@
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
     <Reference Include="Xamarin.Android.Support.v4">
-      <HintPath>..\solutions\packages\Xamarin.Android.Support.v4.22.2.0.0\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
+      <HintPath>..\solutions\packages\Xamarin.Android.Support.v4.23.1.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Android.Support.v7.AppCompat">
-      <HintPath>..\solutions\packages\Xamarin.Android.Support.v7.AppCompat.22.2.0.0\lib\MonoAndroid403\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
+      <HintPath>..\solutions\packages\Xamarin.Android.Support.v7.AppCompat.23.1.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
     </Reference>
-    <Reference Include="android-iconics-1.2.1">
-      <HintPath>..\solutions\packages\Mikepenz.Android.Iconics.Xamarin.Binding.1.2.1\lib\MonoAndroid\android-iconics-1.2.1.dll</HintPath>
+    <Reference Include="android-iconics">
+      <HintPath>..\solutions\packages\Mikepenz.Android.Iconics.Xamarin.Binding.2.5.1\lib\MonoAndroid\android-iconics.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -66,8 +66,8 @@
       <SubType>Designer</SubType>
     </TransformFile>
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Novell\Xamarin.Android.Bindings.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets" />
   <ItemGroup>
     <LibraryProjectZip Include="Jars\materialdrawer-3.1.2.aar" />
   </ItemGroup>
