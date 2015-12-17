@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialDrawerSampleNuget", "..\samples\MaterialDrawerSampleNuget\MaterialDrawerSampleNuget.csproj", "{6E35247B-58E6-465B-9E0F-E0AF9AAD66FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialDrawerSample", "..\samples\MaterialDrawerSampleNuget\MaterialDrawerSample.csproj", "{6E35247B-58E6-465B-9E0F-E0AF9AAD66FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
