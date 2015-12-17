@@ -5,6 +5,8 @@
   
   This sample removes the method: android.support.v4.content.CursorLoader.loadInBackground:
   -->
+
+<!-- Removed classes which cause compilation errors -->
   <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Brown']" />
   <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Red']" />
   <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Pink']" />
