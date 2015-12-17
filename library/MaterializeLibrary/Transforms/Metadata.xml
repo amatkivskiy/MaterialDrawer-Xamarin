@@ -1,0 +1,30 @@
+﻿<metadata>
+	<!--
+  This sample removes the class: android.support.v4.content.AsyncTaskLoader.LoadTask:
+  <remove-node path="/api/package[@name='android.support.v4.content']/class[@name='AsyncTaskLoader.LoadTask']" />
+  
+  This sample removes the method: android.support.v4.content.CursorLoader.loadInBackground:
+  -->
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Brown']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Red']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Pink']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Purple']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.DeepPurple']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Indigo']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Blue']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.LightBlue']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Teal']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Green']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.LightGreen']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Lime']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Yellow']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Amber']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Orange']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.DeepOrange']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Grey']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.BlueGrey']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.White']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Cyan']" />
+  <remove-node path="/api/package[@name='com.mikepenz.materialize.color']/class[@name='Material.Black']" />
+
+</metadata>

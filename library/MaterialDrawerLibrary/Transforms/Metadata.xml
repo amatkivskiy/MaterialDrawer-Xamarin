@@ -1,0 +1,42 @@
+﻿<metadata>
+
+  <!-- Fixed bug with java generics -->
+  <attr name="managedReturn" path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='PrimaryDrawerItem']/method[@name='withBadge']">Java.Lang.Object</attr>
+  <attr name="managedReturn" path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='SecondaryDrawerItem']/method[@name='withBadge']">Java.Lang.Object</attr>
+
+  <!-- Removed classes which cause compilaion errors. -->
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='ProfileSettingDrawerItem.ItemFactory']"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='ContainerDrawerItem.ItemFactory']"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='DividerDrawerItem.ItemFactory']"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='MiniDrawerItem.ItemFactory']"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='PrimaryDrawerItem.ItemFactory']"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='ProfileDrawerItem.ItemFactory']"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='SecondaryDrawerItem.ItemFactory']"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='SecondarySwitchDrawerItem.ItemFactory']"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='SecondaryToggleDrawerItem.ItemFactory']"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='MiniProfileDrawerItem.ItemFactory']"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='SectionDrawerItem.ItemFactory']"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='SwitchDrawerItem.ItemFactory']"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='ToggleDrawerItem.ItemFactory']"/>
+
+  <!-- Fixed visibility of classes. -->
+  <attr path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='BaseSecondaryDrawerItem.BaseViewHolder']" name="visibility">public</attr>
+  <attr path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='BasePrimaryDrawerItem.BaseViewHolder']" name="visibility">public</attr>
+
+  <!-- Fixed namespaces namings. -->
+  <attr name="managedName" path="/api/package[@name='com.mikepenz.materialdrawer']">Mikepenz.MaterialDrawer</attr>
+  <attr name="managedName" path="/api/package[@name='com.mikepenz.materialdrawer.adapter']">Mikepenz.MaterialDrawer.Adapters</attr>
+  <attr name="managedName" path="/api/package[@name='com.mikepenz.materialdrawer.holder']">Mikepenz.MaterialDrawer.Holders</attr>
+  <attr name="managedName" path="/api/package[@name='com.mikepenz.materialdrawer.icons']">Mikepenz.MaterialDrawer.Icons</attr>
+  <attr name="managedName" path="/api/package[@name='com.mikepenz.materialdrawer.model']">Mikepenz.MaterialDrawer.Models</attr>
+  <attr name="managedName" path="/api/package[@name='com.mikepenz.materialdrawer.model.interfaces']">Mikepenz.MaterialDrawer.Models.Interfaces</attr>
+  <attr name="managedName" path="/api/package[@name='com.mikepenz.materialdrawer.model.utils']">Mikepenz.MaterialDrawer.Models.Utils</attr>
+  <attr name="managedName" path="/api/package[@name='com.mikepenz.materialdrawer.util']">Mikepenz.MaterialDrawer.Utils</attr>
+  <attr name="managedName" path="/api/package[@name='com.mikepenz.materialdrawer.view']">Mikepenz.MaterialDrawer.Views</attr>
+
+  <!-- Removed deprecated methods. -->
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='BaseDrawerItem']/method[@name='withTintSelectedIcon' and count(parameter)=1 and parameter[1][@type='boolean']]"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer.model']/class[@name='BaseDrawerItem']/method[@name='withIconTinted' and count(parameter)=1 and parameter[1][@type='boolean']]"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer']/class[@name='AccountHeader']/method[@name='updateProfileByIdentifier' and count(parameter)=1 and parameter[1][@type='com.mikepenz.materialdrawer.model.interfaces.IProfile']]"/>
+  <remove-node path="/api/package[@name='com.mikepenz.materialdrawer']/class[@name='AccountHeaderBuilder']/method[@name='withSelectionFistLineShown' and count(parameter)=1 and parameter[1][@type='boolean']]"/>
+</metadata>

@@ -107,12 +107,6 @@
     <AndroidResource Include="Resources\values\styles.xml" />
     <AndroidResource Include="Resources\values-v19\styles.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\library\MaterialDrawer.csproj">
-      <Project>{0D0D20CD-8CAB-4C20-9EE6-C0B69E6CE0C4}</Project>
-      <Name>MaterialDrawer</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\fontawesome-webfont-v4.5.0.1.ttf" />
@@ -120,5 +114,11 @@
     <AndroidAsset Include="Assets\fonts\materialdesignicons-v1.3.41.ttf" />
     <AndroidAsset Include="Assets\fonts\meteocons.ttf" />
     <AndroidAsset Include="Assets\fonts\octicons-v3.2.0.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\library\MaterialDrawerLibrary\MaterialDrawerLibrary.csproj">
+      <Project>{0D0D20CD-8CAB-4C20-9EE6-C0B69E6CE0C4}</Project>
+      <Name>MaterialDrawerLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

@@ -15,7 +15,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <ReleaseVersion>3.1.2</ReleaseVersion>
-    <Java7DocPaths>JavaSrc</Java7DocPaths>
+    <!--    <Java7DocPaths>JavaSrc</Java7DocPaths>-->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -73,9 +73,14 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets" />
   <ItemGroup>
     <LibraryProjectZip Include="Jars\materialdrawer-4.5.8.aar" />
-    <LibraryProjectZip Include="Jars\materialize-0.5.1.aar" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="JavaSrc\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MaterializeLibrary\MaterializeLibrary.csproj">
+      <Project>{EBBDDE0B-3DCA-4C42-9E34-C464ECE7229B}</Project>
+      <Name>MaterializeLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
