@@ -27,5 +27,6 @@ https://github.com/mikepenz/MaterialDrawer</description>
 	</metadata>
 	<files>
 		<file src="../library/MaterialDrawerLibrary/bin/Release/material-drawer.dll" target="lib\MonoAndroid\"/>
+		<file src="../library/MaterializeLibrary/bin/Release/materialize-library.dll" target="lib\MonoAndroid\"/>
 	</files>
 </package>
