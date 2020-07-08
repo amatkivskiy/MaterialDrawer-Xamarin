@@ -1,3 +1,8 @@
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/) 
+# DEPRECATED
+
+:warning: This is no longer supported - unfortunately, I am not in the Xamarin development anymore.  :warning:
+
 # MaterialDrawer-Xamarin
 
 [![Join the chat at https://gitter.im/amatkivskiy/MaterialDrawer-Xamarin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/amatkivskiy/MaterialDrawer-Xamarin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
